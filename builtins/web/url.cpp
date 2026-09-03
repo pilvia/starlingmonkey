@@ -519,6 +519,7 @@ ACCESSOR(username)
 
 const JSFunctionSpec URL::static_methods[] = {
     JS_FN("canParse", canParse, 1, JSPROP_ENUMERATE),
+    JS_FN("parse", parse, 1, JSPROP_ENUMERATE),
     JS_FN("createObjectURL", createObjectURL, 1, JSPROP_ENUMERATE),
     JS_FN("revokeObjectURL", revokeObjectURL, 1, JSPROP_ENUMERATE),
     JS_FS_END,
@@ -788,6 +789,57 @@ bool URL::canParse(JSContext *cx, unsigned argc, JS::Value *vp) {
   // 2. If parsedURL is failure, then return false.
   // 3. Return true.
   args.rval().setBoolean(url != nullptr);
+  return true;
+}
+
+// https://url.spec.whatwg.org/#dom-url-parse
+bool URL::parse(JSContext *cx, unsigned argc, JS::Value *vp) {
+  CallArgs args = JS::CallArgsFromVp(argc, vp);
+
+  // As in `canParse`, converting an argument to a string can throw, whereas
+  // failing to parse the result returns null.
+  auto url_str = core::encode_spec_string(cx, args.get(0));
+  if (!url_str.data) {
+    return false;
+  }
+
+  jsurl::JSUrl *base = nullptr;
+  if (!args.get(1).isUndefined()) {
+    auto base_str = core::encode_spec_string(cx, args.get(1));
+    if (!base_str.data) {
+      return false;
+    }
+
+    base = jsurl::new_jsurl(&base_str);
+    if (!base) {
+      args.rval().setNull();
+      return true;
+    }
+  }
+
+  // 1. Let parsedURL be the result of running the API URL parser on url with
+  // base, if given.
+  jsurl::JSUrl *url =
+      base ? jsurl::new_jsurl_with_base(&url_str, base) : jsurl::new_jsurl(&url_str);
+  jsurl::free_jsurl(base);
+
+  // 2. If parsedURL is failure, then return null.
+  if (!url) {
+    args.rval().setNull();
+    return true;
+  }
+
+  // 3. Return the result of creating a URL object from parsedURL. The object is
+  // set up exactly as the constructor's `create` does, and is freshly allocated
+  // on every call, so two parses of the same input aren't the same object.
+  JS::RootedObject self(cx, JS_NewObjectWithGivenProto(cx, &class_, proto_obj));
+  if (!self) {
+    jsurl::free_jsurl(url);
+    return false;
+  }
+
+  JS::SetReservedSlot(self, std::to_underlying(Slots::Url), JS::PrivateValue(url));
+  args.rval().setObject(*self);
   return true;
 }
 
