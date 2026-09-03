@@ -1,23 +1,23 @@
 {
   "URL.canParse(undefined, undefined)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "URL.canParse(aaa:b, undefined)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "URL.canParse(undefined, aaa:b)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "URL.canParse(aaa:/b, undefined)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "URL.canParse(undefined, aaa:/b)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "URL.canParse(https://test:test, undefined)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "URL.canParse(a, https://b/)": {
-    "status": "FAIL"
+    "status": "PASS"
   }
 }
