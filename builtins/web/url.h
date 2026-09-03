@@ -89,6 +89,7 @@ class URL : public BuiltinImpl<URL, FinalizableClassPolicy> {
   static bool origin_get(JSContext *cx, unsigned argc, JS::Value *vp);
   static bool searchParams_get(JSContext *cx, unsigned argc, JS::Value *vp);
 
+  static bool canParse(JSContext *cx, unsigned argc, JS::Value *vp);
   static bool createObjectURL(JSContext *cx, unsigned argc, JS::Value *vp);
   static bool revokeObjectURL(JSContext *cx, unsigned argc, JS::Value *vp);
 

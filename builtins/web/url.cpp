@@ -518,6 +518,7 @@ ACCESSOR(username)
 #undef ACCESSOR
 
 const JSFunctionSpec URL::static_methods[] = {
+    JS_FN("canParse", canParse, 1, JSPROP_ENUMERATE),
     JS_FN("createObjectURL", createObjectURL, 1, JSPROP_ENUMERATE),
     JS_FN("revokeObjectURL", revokeObjectURL, 1, JSPROP_ENUMERATE),
     JS_FS_END,
@@ -746,6 +747,48 @@ bool URL::toString(JSContext *cx, unsigned argc, JS::Value *vp) {
 bool URL::toJSON(JSContext *cx, unsigned argc, JS::Value *vp) {
   METHOD_HEADER(0)
   return href_get(cx, argc, vp);
+}
+
+// https://url.spec.whatwg.org/#dom-url-canparse
+bool URL::canParse(JSContext *cx, unsigned argc, JS::Value *vp) {
+  CallArgs args = JS::CallArgsFromVp(argc, vp);
+
+  // Both parameters are USVStrings: failing to convert an argument to a string
+  // throws, whereas failing to parse the result returns `false`. A missing
+  // `url` argument stringifies to "undefined", which doesn't parse.
+  auto url_str = core::encode_spec_string(cx, args.get(0));
+  if (!url_str.data) {
+    return false;
+  }
+
+  jsurl::JSUrl *base = nullptr;
+  if (!args.get(1).isUndefined()) {
+    auto base_str = core::encode_spec_string(cx, args.get(1));
+    if (!base_str.data) {
+      return false;
+    }
+
+    // The API URL parser parses `base` first, so a base that doesn't parse
+    // makes the whole operation return `false`.
+    base = jsurl::new_jsurl(&base_str);
+    if (!base) {
+      args.rval().setBoolean(false);
+      return true;
+    }
+  }
+
+  // 1. Let parsedURL be the result of running the API URL parser on url with
+  // base, if given.
+  jsurl::JSUrl *url =
+      base ? jsurl::new_jsurl_with_base(&url_str, base) : jsurl::new_jsurl(&url_str);
+
+  jsurl::free_jsurl(base);
+  jsurl::free_jsurl(url);
+
+  // 2. If parsedURL is failure, then return false.
+  // 3. Return true.
+  args.rval().setBoolean(url != nullptr);
+  return true;
 }
 
 bool URL::constructor(JSContext *cx, unsigned argc, JS::Value *vp) {
