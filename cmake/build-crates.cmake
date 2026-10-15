@@ -37,6 +37,11 @@ endfunction()
 # These two crates are needed by SpiderMonkey:
 add_rust_lib(rust-encoding "${CMAKE_CURRENT_SOURCE_DIR}/crates/rust-encoding")
 add_rust_lib(rust-hooks "${CMAKE_CURRENT_SOURCE_DIR}/crates/rust-hooks")
+# An --with-intl-api SpiderMonkey also needs the ICU4X C API. It must ride in
+# THIS staticlib, not a second one: linking firefox's own libjsrust.a instead
+# duplicates encoding_c and rust_eh_personality, which is the very problem
+# this single-staticlib bundle exists to avoid.
+add_rust_lib(rust-icu-capi "${CMAKE_CURRENT_SOURCE_DIR}/crates/rust-icu-capi")
 
 # The rust-hooks crate needs a supporting CPP file
 add_library(rust-hooks-wrappers STATIC "${CMAKE_CURRENT_SOURCE_DIR}/crates/rust-hooks/src/wrappers.cpp")
