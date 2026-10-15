@@ -32,7 +32,7 @@ else()
             OUTPUT_VARIABLE HTTP_STATUS
     )
 
-    if (CURL_RESULT EQUAL 0 AND HTTP_STATUS STREQUAL "200")
+    if (NOT DEFINED ENV{SM_FORCE_SOURCE} AND CURL_RESULT EQUAL 0 AND HTTP_STATUS STREQUAL "200")
         message(STATUS "Using pre-built SpiderMonkey artifacts from ${SM_URL}")
         CPMAddPackage(NAME spidermonkey-${SM_BUILD_TYPE}
                 URL ${SM_URL}
