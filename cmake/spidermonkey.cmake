@@ -108,7 +108,7 @@ else()
 ac_add_options --disable-js-shell
 ac_add_options --target=wasm32-unknown-wasi
 ac_add_options --without-system-zlib
-ac_add_options --without-intl-api
+ac_add_options --with-intl-api
 ac_add_options --disable-jit
 ac_add_options --disable-shared-js
 ac_add_options --disable-shared-memory

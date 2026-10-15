@@ -1,0 +1,14 @@
+[package]
+name = "rust-icu-capi"
+version = "0.1.0"
+edition = "2021"
+description = "ICU4X C API, required by SpiderMonkey when built --with-intl-api (MOZ_ICU4X)"
+
+[lib]
+
+[dependencies]
+# Must match the version firefox pins in js/src/rust/shared/Cargo.toml (at the
+# SM_TAG in cmake/spidermonkey.cmake), with the same features, so every
+# icu4x_*_mv1 symbol SpiderMonkey references exists. Exact on purpose: a caret
+# requirement resolved to 2.1.2 against firefox's vendored 2.0.0.
+icu_capi = { version = "=2.0.0", default-features = false, features = ["any_provider", "compiled_data", "segmenter", "calendar"] }
