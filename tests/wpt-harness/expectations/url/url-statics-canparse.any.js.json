@@ -9,7 +9,7 @@
     "status": "PASS"
   },
   "URL.canParse(undefined, https://test:test/)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "URL.canParse(aaa:/b, undefined)": {
     "status": "PASS"
