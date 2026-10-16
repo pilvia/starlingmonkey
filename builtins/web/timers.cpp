@@ -74,7 +74,15 @@ public:
 
     RootedValue rval(cx);
     if (!Call(cx, NullHandleValue, callback, argv, &rval)) {
-      return false;
+      // HTML: an exception thrown by the callback is reported, and the event
+      // loop carries on. Only an uncatchable error (no exception pending) ends
+      // it.
+      RootedValue exception(cx);
+      if (!JS_GetPendingException(cx, &exception)) {
+        return false;
+      }
+      JS_ClearPendingException(cx);
+      api::Engine::report_exception(exception, "running a timer callback");
     }
 
     // The task might've been canceled during the callback.

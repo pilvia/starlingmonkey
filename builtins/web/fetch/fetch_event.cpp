@@ -35,6 +35,8 @@ JS::PersistentRootedObject INSTANCE;
 host_api::HttpOutgoingBody *STREAMING_BODY;
 
 constexpr const std::string_view DEFAULT_NO_HANDLER_ERROR_MSG = "ERROR: no fetch-event handler triggered, was one registered?";
+constexpr const std::string_view RESPONSE_NEVER_SETTLED_ERROR_MSG =
+    "ERROR: the promise passed to respondWith() never settled";
 
 void inc_pending_promise_count(JSObject *self) {
   MOZ_ASSERT(FetchEvent::is_instance(self));
@@ -526,6 +528,12 @@ bool handle_incoming_request(host_api::HttpIncomingRequest *request) {
   }
 
   if (!FetchEvent::response_started(fetch_event)) {
+    // A handler called respondWith() but its promise never settled: the event
+    // loop ran out of work first.
+    if (FetchEvent::state(fetch_event) == FetchEvent::State::waitToRespond) {
+      FetchEvent::respondWithError(ENGINE->cx(), fetch_event, RESPONSE_NEVER_SETTLED_ERROR_MSG);
+      return true;
+    }
     // If at this point no fetch event handler has run, we can
     // send a specific error indicating that there is likely no handler registered
     FetchEvent::respondWithError(ENGINE->cx(), fetch_event, DEFAULT_NO_HANDLER_ERROR_MSG);
@@ -537,7 +545,10 @@ bool handle_incoming_request(host_api::HttpIncomingRequest *request) {
   }
 
   if (ENGINE->has_unhandled_promise_rejections()) {
-    std::println(stderr, "Warning: Unhandled promise rejections detected after handling incoming request.");
+    // A global reportError gets one report per rejection and no preamble.
+    if (!ENGINE->has_global_error_reporter()) {
+      std::println(stderr, "Warning: Unhandled promise rejections detected after handling incoming request.");
+    }
     ENGINE->report_unhandled_promise_rejections();
   }
 

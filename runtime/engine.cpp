@@ -351,6 +351,36 @@ bool init_js(const EngineConfig& config) {
   return true;
 }
 
+// The global's `reportError`, when it is a function, or nullptr.
+static JSObject *global_error_reporter(JSContext *cx) {
+  RootedObject global(cx, GLOBAL);
+  RootedValue reporter(cx);
+  if (!JS_GetProperty(cx, global, "reportError", &reporter)) {
+    JS_ClearPendingException(cx);
+    return nullptr;
+  }
+  if (!reporter.isObject() || !JS::IsCallable(&reporter.toObject())) {
+    return nullptr;
+  }
+  return &reporter.toObject();
+}
+
+// Sends `error` to the global's `reportError`. False when there is none, or
+// when it threw; the caller then prints the error itself.
+static bool report_through_global(JSContext *cx, HandleValue error) {
+  RootedObject reporter(cx, global_error_reporter(cx));
+  if (!reporter) {
+    return false;
+  }
+  RootedValue reporter_val(cx, JS::ObjectValue(*reporter));
+  RootedValue rval(cx);
+  if (!JS::Call(cx, JS::UndefinedHandleValue, reporter_val, JS::HandleValueArray(error), &rval)) {
+    JS_ClearPendingException(cx);
+    return false;
+  }
+  return true;
+}
+
 static bool report_unhandled_promise_rejections(JSContext *cx) {
   RootedValue iterable(cx);
   if (!JS::SetValues(cx, unhandledRejectedPromises, &iterable)) {
@@ -375,10 +405,14 @@ static bool report_unhandled_promise_rejections(JSContext *cx) {
     }
 
     promise = &promise_val.toObject();
+    RootedValue result(cx, JS::GetPromiseResult(promise));
+    // A global `reportError` receives each rejection reason as one report.
+    if (report_through_global(cx, result)) {
+      continue;
+    }
     // Note: we unconditionally print these, since they almost always indicate
     // serious bugs.
     std::print(stderr, "Promise rejected but never handled: ");
-    RootedValue result(cx, JS::GetPromiseResult(promise));
     dump_promise_rejection(cx, result, promise, stderr);
   }
 
@@ -756,6 +790,16 @@ void Engine::queue_async_task(const RefPtr<AsyncTask>& task) {
 bool Engine::cancel_async_task(const RefPtr<AsyncTask>& task) {
   return core::EventLoop::cancel_async_task(this, task);
 }
+
+void Engine::report_exception(HandleValue error, const char *description) {
+  if (report_through_global(CONTEXT, error)) {
+    return;
+  }
+  std::println(stderr, "Exception while {}", description);
+  Engine::dump_error(error, stderr);
+}
+
+bool Engine::has_global_error_reporter() { return global_error_reporter(CONTEXT) != nullptr; }
 
 bool Engine::has_unhandled_promise_rejections() {
   return JS::SetSize(CONTEXT, unhandledRejectedPromises) > 0;
