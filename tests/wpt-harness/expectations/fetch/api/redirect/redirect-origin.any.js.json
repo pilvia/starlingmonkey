@@ -1,6 +1,6 @@
 {
   "[GET] Redirect 301 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[GET] Redirect 301 Same origin to other origin": {
     "status": "FAIL"
@@ -12,7 +12,7 @@
     "status": "FAIL"
   },
   "[POST] Redirect 301 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[POST] Redirect 301 Same origin to other origin": {
     "status": "FAIL"
@@ -24,7 +24,7 @@
     "status": "FAIL"
   },
   "[GET] Redirect 302 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[GET] Redirect 302 Same origin to other origin": {
     "status": "FAIL"
@@ -36,7 +36,7 @@
     "status": "FAIL"
   },
   "[POST] Redirect 302 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[POST] Redirect 302 Same origin to other origin": {
     "status": "FAIL"
@@ -48,7 +48,7 @@
     "status": "FAIL"
   },
   "[GET] Redirect 303 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[GET] Redirect 303 Same origin to other origin": {
     "status": "FAIL"
@@ -60,7 +60,7 @@
     "status": "FAIL"
   },
   "[POST] Redirect 303 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[POST] Redirect 303 Same origin to other origin": {
     "status": "FAIL"
@@ -72,7 +72,7 @@
     "status": "FAIL"
   },
   "[GET] Redirect 307 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[GET] Redirect 307 Same origin to other origin": {
     "status": "FAIL"
@@ -84,7 +84,7 @@
     "status": "FAIL"
   },
   "[POST] Redirect 307 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[POST] Redirect 307 Same origin to other origin": {
     "status": "FAIL"
@@ -96,7 +96,7 @@
     "status": "FAIL"
   },
   "[GET] Redirect 308 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[GET] Redirect 308 Same origin to other origin": {
     "status": "FAIL"
@@ -108,7 +108,7 @@
     "status": "FAIL"
   },
   "[POST] Redirect 308 Same origin to same origin": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "[POST] Redirect 308 Same origin to other origin": {
     "status": "FAIL"

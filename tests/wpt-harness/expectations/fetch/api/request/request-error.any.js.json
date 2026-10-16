@@ -45,7 +45,7 @@
     "status": "FAIL"
   },
   "Bad redirect init parameter value": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "request-error": {
     "status": "PASS"
