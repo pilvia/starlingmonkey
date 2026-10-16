@@ -4,6 +4,7 @@
 #include "decompression-stream.h"
 #include "native-stream-sink.h"
 #include "native-stream-source.h"
+#include "readable-stream-async-iterator.h"
 #include "transform-stream-default-controller.h"
 #include "transform-stream.h"
 
@@ -29,6 +30,9 @@ bool install(api::Engine *engine) {
     return false;
   }
   if (!BufReader::init_class(engine->cx(), engine->global())) {
+    return false;
+  }
+  if (!ReadableStreamAsyncIterator::install(engine->cx(), engine->global())) {
     return false;
   }
   return true;
