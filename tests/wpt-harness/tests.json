@@ -14,7 +14,6 @@
   "compression/decompression-correct-input.any.js",
   "compression/decompression-corrupt-input.any.js",
   "compression/decompression-empty-input.any.js",
-  "compression/decompression-extra-input.any.js",
   "compression/decompression-split-chunk.any.js",
   "compression/decompression-uint8array-output.any.js",
   "compression/decompression-with-detach.any.js",

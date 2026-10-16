@@ -1,8 +1,14 @@
 {
-  "decompressing deflated output should give Uint8Array chunks": {
+  "decompressing deflate output should give Uint8Array chunks": {
     "status": "PASS"
   },
   "decompressing gzip output should give Uint8Array chunks": {
     "status": "PASS"
+  },
+  "decompressing deflate-raw output should give Uint8Array chunks": {
+    "status": "PASS"
+  },
+  "decompressing brotli output should give Uint8Array chunks": {
+    "status": "FAIL"
   }
 }
