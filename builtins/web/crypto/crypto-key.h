@@ -120,6 +120,11 @@ public:
 
   static bool init_class(JSContext *cx, JS::HandleObject global);
 
+  // A secret key (HMAC or AES) over its own copy of `data`. `algorithm` becomes
+  // the key's [[algorithm]] object.
+  static JSObject *createSecret(JSContext *cx, JS::HandleObject algorithm,
+                                std::span<const uint8_t> data, bool extractable,
+                                CryptoKeyUsages usages);
   static JSObject *createHMAC(JSContext *cx, CryptoAlgorithmHMAC_Import *algorithm,
                               std::unique_ptr<std::span<uint8_t>> data, unsigned long length,
                               bool extractable, CryptoKeyUsages usages);
@@ -133,6 +138,10 @@ public:
   static JSObject *get_algorithm(JS::HandleObject self);
   static EVP_PKEY *key(JSObject *self);
   static std::span<uint8_t> hmacKeyData(JSObject *self);
+  // The bytes of a secret key (HMAC or AES).
+  static std::span<uint8_t> secretKeyData(JSObject *self) { return hmacKeyData(self); }
+  static bool extractable(JSObject *self);
+  static CryptoKeyUsages usages(JSObject *self);
   static bool canSign(JS::HandleObject self);
   static bool canVerify(JS::HandleObject self);
   static JS::Result<bool> is_algorithm(JSContext *cx, JS::HandleObject self,

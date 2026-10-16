@@ -593,9 +593,9 @@ EvpPkeyPtr create_rsa_key_from_parts(
 
 } // namespace
 
-JSObject *CryptoKey::createHMAC(JSContext *cx, CryptoAlgorithmHMAC_Import *algorithm,
-                                std::unique_ptr<std::span<uint8_t>> data, unsigned long length,
-                                bool extractable, CryptoKeyUsages usages) {
+JSObject *CryptoKey::createSecret(JSContext *cx, JS::HandleObject algorithm,
+                                  std::span<const uint8_t> data, bool extractable,
+                                  CryptoKeyUsages usages) {
   MOZ_ASSERT(cx);
   MOZ_ASSERT(algorithm);
   JS::RootedObject instance(
@@ -604,18 +604,34 @@ JSObject *CryptoKey::createHMAC(JSContext *cx, CryptoAlgorithmHMAC_Import *algor
     return nullptr;
   }
 
+  // The key owns its bytes: the caller's buffer may be detached, resized or
+  // collected after the call.
+  auto *bytes = static_cast<uint8_t *>(JS_malloc(cx, data.empty() ? 1 : data.size()));
+  if (!bytes) {
+    JS_ReportOutOfMemory(cx);
+    return nullptr;
+  }
+  std::copy(data.begin(), data.end(), bytes);
+
+  JS::SetReservedSlot(instance, std::to_underlying(Slots::Algorithm), JS::ObjectValue(*algorithm));
+  JS::SetReservedSlot(instance, std::to_underlying(Slots::Type), JS::Int32Value(static_cast<uint8_t>(CryptoKeyType::Secret)));
+  JS::SetReservedSlot(instance, std::to_underlying(Slots::Extractable), JS::BooleanValue(extractable));
+  JS::SetReservedSlot(instance, std::to_underlying(Slots::Usages), JS::Int32Value(usages.toInt()));
+  JS::SetReservedSlot(instance, std::to_underlying(Slots::KeyDataLength), JS::Int32Value(data.size()));
+  JS::SetReservedSlot(instance, std::to_underlying(Slots::KeyData), JS::PrivateValue(bytes));
+  return instance;
+}
+
+JSObject *CryptoKey::createHMAC(JSContext *cx, CryptoAlgorithmHMAC_Import *algorithm,
+                                std::unique_ptr<std::span<uint8_t>> data, unsigned long length,
+                                bool extractable, CryptoKeyUsages usages) {
+  MOZ_ASSERT(cx);
+  MOZ_ASSERT(algorithm);
   JS::RootedObject alg(cx, algorithm->toObject(cx));
   if (!alg) {
     return nullptr;
   }
-
-  JS::SetReservedSlot(instance, std::to_underlying(Slots::Algorithm), JS::ObjectValue(*alg));
-  JS::SetReservedSlot(instance, std::to_underlying(Slots::Type), JS::Int32Value(static_cast<uint8_t>(CryptoKeyType::Secret)));
-  JS::SetReservedSlot(instance, std::to_underlying(Slots::Extractable), JS::BooleanValue(extractable));
-  JS::SetReservedSlot(instance, std::to_underlying(Slots::Usages), JS::Int32Value(usages.toInt()));
-  JS::SetReservedSlot(instance, std::to_underlying(Slots::KeyDataLength), JS::Int32Value(data->size()));
-  JS::SetReservedSlot(instance, std::to_underlying(Slots::KeyData), JS::PrivateValue(data.release()->data()));
-  return instance;
+  return createSecret(cx, alg, *data, extractable, usages);
 }
 
 JSObject *CryptoKey::createECDSA(JSContext *cx, CryptoAlgorithmECDSA_Import *algorithm,
@@ -849,6 +865,18 @@ JS::Result<bool> CryptoKey::is_algorithm(JSContext *cx, JS::HandleObject self,
     return JS::Result<bool>(JS::Error());
   }
   return match;
+}
+
+bool CryptoKey::extractable(JSObject *self) {
+  MOZ_ASSERT(is_instance(self));
+  return JS::GetReservedSlot(self, std::to_underlying(Slots::Extractable)).toBoolean();
+}
+
+CryptoKeyUsages CryptoKey::usages(JSObject *self) {
+  MOZ_ASSERT(is_instance(self));
+  auto usages = JS::GetReservedSlot(self, std::to_underlying(Slots::Usages)).toInt32();
+  MOZ_ASSERT(std::in_range<std::uint8_t>(usages));
+  return CryptoKeyUsages(static_cast<uint8_t>(usages));
 }
 
 bool CryptoKey::canSign(JS::HandleObject self) {

@@ -112,6 +112,10 @@ const char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                       "abcdefghijklmnopqrstuvwxyz"
                       "0123456789+/";
 
+const char base64URLEncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                      "abcdefghijklmnopqrstuvwxyz"
+                      "0123456789-_";
+
 // clang-format on
 
 bool base64CharacterToValue(char character, uint8_t *value, const uint8_t *decodeTable) {

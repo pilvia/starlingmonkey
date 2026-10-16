@@ -116,6 +116,7 @@ add_builtin(
     SRC
         builtins/web/crypto/crypto.cpp
         builtins/web/crypto/crypto-algorithm.cpp
+        builtins/web/crypto/crypto-algorithm-aes.cpp
         builtins/web/crypto/crypto-key.cpp
         builtins/web/crypto/crypto-key-ec-components.cpp
         builtins/web/crypto/crypto-key-rsa-components.cpp

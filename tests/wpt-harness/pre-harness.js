@@ -27,7 +27,6 @@ globalThis.Window={
   }
 }
 
-globalThis.crypto.subtle.generateKey = function () {return Promise.reject(new Error('globalThis.crypto.subtle.generateKey unimplemented'))}
 globalThis.SharedArrayBuffer = class SharedArrayBuffer{};
 globalThis.MessageChannel = class MessageChannel{};
 ;

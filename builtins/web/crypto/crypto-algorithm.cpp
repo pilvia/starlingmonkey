@@ -1200,12 +1200,14 @@ CryptoAlgorithmImportKey::normalize(JSContext *cx, JS::HandleValue value) {
   case CryptoAlgorithmIdentifier::ECDSA: {
     return CryptoAlgorithmECDSA_Import::fromParameters(cx, params);
   }
-  case CryptoAlgorithmIdentifier::RSA_PSS:
-  case CryptoAlgorithmIdentifier::RSA_OAEP:
   case CryptoAlgorithmIdentifier::AES_CTR:
   case CryptoAlgorithmIdentifier::AES_CBC:
   case CryptoAlgorithmIdentifier::AES_GCM:
-  case CryptoAlgorithmIdentifier::AES_KW:
+  case CryptoAlgorithmIdentifier::AES_KW: {
+    return std::make_unique<CryptoAlgorithmAES_Import>(identifier);
+  }
+  case CryptoAlgorithmIdentifier::RSA_PSS:
+  case CryptoAlgorithmIdentifier::RSA_OAEP:
   case CryptoAlgorithmIdentifier::ECDH:
   case CryptoAlgorithmIdentifier::HKDF:
   case CryptoAlgorithmIdentifier::PBKDF2: {
@@ -1262,6 +1264,8 @@ JSObject *CryptoAlgorithmHMAC_Import::importKey(JSContext *cx, CryptoKeyFormat f
   }
 
   std::unique_ptr<std::span<uint8_t>> data;
+  // Owns the bytes decoded from a JWK's `k`, which `data` points into.
+  std::vector<uint8_t> jwk_bytes;
   // 3. Let hash be a new KeyAlgorithm.
   // 4.
   switch (format) {
@@ -1303,10 +1307,8 @@ JSObject *CryptoAlgorithmHMAC_Import::importKey(JSContext *cx, CryptoKeyFormat f
       return nullptr;
     }
     auto data_string = dataResult.unwrap();
-    auto ddd = std::vector<uint8_t>(data_string.begin(), data_string.end());
-    data = std::make_unique<std::span<uint8_t>>(
-      ddd
-    );
+    jwk_bytes.assign(data_string.begin(), data_string.end());
+    data = std::make_unique<std::span<uint8_t>>(jwk_bytes);
     // 6.7 Set the hash to equal the hash member of normalizedAlgorithm.
     CryptoAlgorithmIdentifier hash = this->hashIdentifier;
     switch(hash) {
