@@ -3,45 +3,45 @@
     "status": "PASS"
   },
   "Redirect 301 with GET": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 301 with POST": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 301 with HEAD": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 302 with GET": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 302 with POST": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 302 with HEAD": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 303 with GET": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 303 with POST": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 303 with HEAD": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 303 with TESTING": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 307 with GET": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 307 with POST (string body)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 307 with POST (blob body)": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Redirect 307 with HEAD": {
-    "status": "FAIL"
+    "status": "PASS"
   }
 }

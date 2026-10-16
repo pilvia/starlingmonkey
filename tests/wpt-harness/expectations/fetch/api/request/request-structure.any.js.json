@@ -45,7 +45,7 @@
     "status": "FAIL"
   },
   "Check redirect attribute": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Check integrity attribute": {
     "status": "FAIL"

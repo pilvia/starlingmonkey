@@ -945,11 +945,15 @@ bool Headers::delete_(JSContext *cx, unsigned argc, JS::Value *vp) {
     return false;
   }
 
+  args.rval().setUndefined();
   if (!is_valid) {
-    args.rval().setUndefined();
     return true;
   }
 
+  return remove_valid(cx, self, name_chars);
+}
+
+bool Headers::remove_valid(JSContext *cx, JS::HandleObject self, string_view name_chars) {
   if (!prepare_for_entries_modification(cx, self)) {
     return false;
   }
@@ -958,13 +962,11 @@ bool Headers::delete_(JSContext *cx, unsigned argc, JS::Value *vp) {
   if (mode == Mode::HostOnly) {
     auto *handle = get_handle(self)->as_writable();
     MOZ_ASSERT(handle);
-    std::string_view name = name_chars;
-    auto res = handle->remove(name);
+    auto res = handle->remove(name_chars);
     if (const auto *err = res.to_err()) {
       HANDLE_ERROR(cx, *err);
       return false;
     }
-    args.rval().setUndefined();
     return true;
   }
 
@@ -972,7 +974,6 @@ bool Headers::delete_(JSContext *cx, unsigned argc, JS::Value *vp) {
 
   auto idx = Headers::lookup(cx, self, name_chars);
   if (!idx) {
-    args.rval().setUndefined();
     return true;
   }
 
@@ -1013,7 +1014,6 @@ bool Headers::delete_(JSContext *cx, unsigned argc, JS::Value *vp) {
 
   headers_sort_list->clear();
 
-  args.rval().setUndefined();
   return true;
 }
 

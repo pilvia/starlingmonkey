@@ -1,20 +1,20 @@
 {
   "redirect-schemes": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "redirect-schemes 1": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "redirect-schemes 2": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "redirect-schemes 3": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "redirect-schemes 4": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "redirect-schemes 5": {
-    "status": "FAIL"
+    "status": "PASS"
   }
 }
