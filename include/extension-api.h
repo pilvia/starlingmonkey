@@ -170,6 +170,18 @@ public:
 
   static bool has_unhandled_promise_rejections();
   void report_unhandled_promise_rejections();
+  /**
+   * HTML's "report an exception" for an error the event loop caught, such as a
+   * throwing timer callback. When the global has a callable `reportError`,
+   * the error goes to it, so an embedder that defines one receives every such
+   * error as one call; otherwise it is printed to stderr.
+   */
+  static void report_exception(HandleValue error, const char *description);
+  /**
+   * Whether the global has a callable `reportError` that report_exception and
+   * report_unhandled_promise_rejections send their errors to.
+   */
+  static bool has_global_error_reporter();
   static void clear_unhandled_promise_rejections();
 
   void reset();
