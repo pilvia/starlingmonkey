@@ -449,7 +449,7 @@ static bool trap(JSContext *cx, unsigned argc, JS::Value *vp) {
 // formatter is not enough: the work happens on first use. One locale warms the
 // others, so the default locale is enough. A fixed date keeps the clock out of
 // the snapshot. A no-op in an engine built without Intl, and never fatal.
-static void warm_up_intl(JSContext *cx) {
+static bool warm_up_intl(JSContext *cx) {
   static const char warm_up[] = R"JS(
     if (typeof Intl === "object") {
       const d = new Date(0);
@@ -471,9 +471,10 @@ static void warm_up_intl(JSContext *cx) {
   RootedValue result(cx);
   if (!source.init(cx, warm_up, sizeof(warm_up) - 1, JS::SourceOwnership::Borrowed)
       || !JS::Evaluate(cx, opts, source, &result)) {
-    TRACE("Intl warm-up failed; continuing without it");
     JS_ClearPendingException(cx);
+    return false;
   }
+  return true;
 }
 
 Engine::Engine(std::unique_ptr<EngineConfig> config) {
@@ -517,7 +518,9 @@ Engine::Engine(std::unique_ptr<EngineConfig> config) {
 
   if (config_->pre_initialize) {
     state_ = EngineState::ScriptPreInitializing;
-    warm_up_intl(cx());
+    if (!warm_up_intl(cx())) {
+      TRACE("Intl warm-up failed; continuing without it");
+    }
   } else {
     state_ = EngineState::Initialized;
     // Debugging isn't supported during wizening, so only try it when doing runtime evaluation.
