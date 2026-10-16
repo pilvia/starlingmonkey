@@ -128,6 +128,7 @@ class Request final : public BuiltinImpl<Request> {
   static bool body_get(JSContext *cx, unsigned argc, JS::Value *vp);
   static bool bodyUsed_get(JSContext *cx, unsigned argc, JS::Value *vp);
   static bool signal_get(JSContext *cx, unsigned argc, JS::Value *vp);
+  static bool redirect_get(JSContext *cx, unsigned argc, JS::Value *vp);
 
   static bool clone(JSContext *cx, unsigned argc, JS::Value *vp);
 
@@ -146,12 +147,21 @@ public:
     ResponsePromise = 8,
     PendingResponseHandle = 9,
     Signal = 10,
-    Count = 11,
+    // The body's source (https://fetch.spec.whatwg.org/#concept-body-source): a copy of the
+    // bytes, a Blob or a FormData, or undefined for a stream body. A 307/308 redirect sends
+    // the body again from it.
+    BodySource = 11,
+    RedirectMode = 12,
+    RedirectCount = 13,
+    Count = 14,
   };
+
+  enum class RedirectMode : uint8_t { Follow, Error, Manual };
 
   static JSObject *response_promise(JSObject *obj);
   static JSString *method(JS::HandleObject obj);
   static JSObject *signal(JSObject *obj);
+  static RedirectMode redirect_mode(JSObject *obj);
 
   static const JSFunctionSpec static_methods[];
   static const JSPropertySpec static_properties[];

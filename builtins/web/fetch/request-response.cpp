@@ -10,6 +10,7 @@
 #include "../streams/native-stream-source.h"
 #include "../streams/transform-stream.h"
 #include "../url.h"
+#include "fetch-api.h"
 #include "fetch-utils.h"
 #include "encode.h"
 #include "extension-api.h"
@@ -321,6 +322,13 @@ bool RequestOrResponse::extract_body(JSContext *cx, JS::HandleObject self,
   JS::RootedObject body_obj(cx, body_val.isObject() ? &body_val.toObject() : nullptr);
   host_api::HostString host_type_str;
 
+  // A request keeps its body's source, so that a 307 or 308 redirect can send the body again.
+  // A Blob is immutable and a FormData is serialized afresh; bytes are copied below.
+  bool keep_source = Request::is_instance(self);
+  if (keep_source && (Blob::is_instance(body_obj) || FormData::is_instance(body_obj))) {
+    JS_SetReservedSlot(self, std::to_underlying(Request::Slots::BodySource), body_val);
+  }
+
   if (Blob::is_instance(body_obj)) {
     RootedValue stream(cx);
     if (!Blob::stream(cx, body_obj, &stream)) {
@@ -426,6 +434,15 @@ bool RequestOrResponse::extract_body(JSContext *cx, JS::HandleObject self,
         js_free(buf);
         return false;
       }
+    }
+
+    if (keep_source) {
+      JSObject *source_copy = JS::CopyArrayBuffer(cx, buffer);
+      if (!source_copy) {
+        return false;
+      }
+      JS_SetReservedSlot(self, std::to_underlying(Request::Slots::BodySource),
+                         JS::ObjectValue(*source_copy));
     }
 
     RootedObject array(cx, JS_NewUint8ArrayWithBuffer(cx, buffer, 0, length));
@@ -1355,6 +1372,12 @@ JSObject *Request::signal(JSObject *obj) {
   return &JS::GetReservedSlot(obj, static_cast<uint32_t>(Request::Slots::Signal)).toObject();
 }
 
+Request::RedirectMode Request::redirect_mode(JSObject *obj) {
+  MOZ_ASSERT(is_instance(obj));
+  return static_cast<RedirectMode>(
+      JS::GetReservedSlot(obj, std::to_underlying(Slots::RedirectMode)).toInt32());
+}
+
 bool Request::method_get(JSContext *cx, unsigned argc, JS::Value *vp) {
   METHOD_HEADER(0)
 
@@ -1416,6 +1439,23 @@ bool Request::signal_get(JSContext *cx, unsigned argc, JS::Value *vp) {
   return true;
 }
 
+// https://fetch.spec.whatwg.org/#dom-request-redirect
+bool Request::redirect_get(JSContext *cx, unsigned argc, JS::Value *vp) {
+  METHOD_HEADER(0)
+  const char *mode = "follow";
+  switch (redirect_mode(self)) {
+  case RedirectMode::Follow: break;
+  case RedirectMode::Error: mode = "error"; break;
+  case RedirectMode::Manual: mode = "manual"; break;
+  }
+  JSString *str = JS_AtomizeString(cx, mode);
+  if (!str) {
+    return false;
+  }
+  args.rval().setString(str);
+  return true;
+}
+
 JSString *GET_atom;
 
 /// https://fetch.spec.whatwg.org/#dom-request-clone
@@ -1474,6 +1514,10 @@ bool Request::clone(JSContext *cx, unsigned argc, JS::Value *vp) {
     return false;
   }
   SetReservedSlot(new_request, std::to_underlying(Slots::Signal), ObjectValue(*signal));
+  SetReservedSlot(new_request, std::to_underlying(Slots::RedirectMode),
+                  GetReservedSlot(self, std::to_underlying(Slots::RedirectMode)));
+  SetReservedSlot(new_request, std::to_underlying(Slots::BodySource),
+                  GetReservedSlot(self, std::to_underlying(Slots::BodySource)));
 
   // clone operation step 2.
   // If request’s body is non-null, set newRequest’s body to the result of cloning request’s body.
@@ -1539,6 +1583,7 @@ const JSPropertySpec Request::properties[] = {
     JS_PSG("body", Request::body_get, JSPROP_ENUMERATE),
     JS_PSG("bodyUsed", Request::bodyUsed_get, JSPROP_ENUMERATE),
     JS_PSG("signal", Request::signal_get, JSPROP_ENUMERATE),
+    JS_PSG("redirect", Request::redirect_get, JSPROP_ENUMERATE),
     JS_STRING_SYM_PS(toStringTag, "Request", JSPROP_READONLY),
     JS_PS_END,
 };
@@ -1565,6 +1610,12 @@ void Request::init_slots(JSObject *requestInstance) {
   JS::SetReservedSlot(requestInstance, std::to_underlying(Slots::BodyUsed), JS::FalseValue());
   JS::SetReservedSlot(requestInstance, std::to_underlying(Slots::Method),
                       JS::StringValue(GET_atom));
+  JS::SetReservedSlot(requestInstance, std::to_underlying(Slots::BodySource),
+                      JS::UndefinedValue());
+  JS::SetReservedSlot(requestInstance, std::to_underlying(Slots::RedirectMode),
+                      JS::Int32Value(std::to_underlying(RedirectMode::Follow)));
+  JS::SetReservedSlot(requestInstance, std::to_underlying(Slots::RedirectCount),
+                      JS::Int32Value(0));
 }
 
 /**
@@ -1702,6 +1753,7 @@ bool Request::initialize(JSContext *cx, JS::HandleObject request, JS::HandleValu
   JS::RootedValue headers_val(cx);
   JS::RootedValue body_val(cx);
   JS::RootedValue signal_val(cx);
+  JS::RootedValue redirect_val(cx);
 
   bool is_get = true;
   bool is_get_or_head = is_get;
@@ -1713,6 +1765,7 @@ bool Request::initialize(JSContext *cx, JS::HandleObject request, JS::HandleValu
     if (!JS_GetProperty(cx, init, "method", &method_val) ||
         !JS_GetProperty(cx, init, "headers", &headers_val) ||
         !JS_GetProperty(cx, init, "body", &body_val) ||
+        !JS_GetProperty(cx, init, "redirect", &redirect_val) ||
         !JS_GetProperty(cx, init, "signal", &signal_val)) {
       return false;
     }
@@ -1768,6 +1821,40 @@ bool Request::initialize(JSContext *cx, JS::HandleObject request, JS::HandleValu
   //      "`same-origin`", then throw a TypeError.
   // 22.  If `init["redirect"]` exists, then set `request`’s redirect mode to
   // it.
+  // (The mode of an input Request applies otherwise, per step 12.)
+  auto redirect_mode = input_request ? Request::redirect_mode(input_request)
+                                     : RedirectMode::Follow;
+  if (!redirect_val.isUndefined()) {
+    JS::RootedString redirect_str(cx, JS::ToString(cx, redirect_val));
+    if (!redirect_str) {
+      return false;
+    }
+    bool matches = false;
+    if (!JS_StringEqualsLiteral(cx, redirect_str, "follow", &matches)) {
+      return false;
+    }
+    if (matches) {
+      redirect_mode = RedirectMode::Follow;
+    } else {
+      if (!JS_StringEqualsLiteral(cx, redirect_str, "error", &matches)) {
+        return false;
+      }
+      if (matches) {
+        redirect_mode = RedirectMode::Error;
+      } else {
+        if (!JS_StringEqualsLiteral(cx, redirect_str, "manual", &matches)) {
+          return false;
+        }
+        if (!matches) {
+          return api::throw_error(cx, api::Errors::TypeError, "Request constructor",
+                                  "init.redirect", "be \"follow\", \"error\" or \"manual\"");
+        }
+        redirect_mode = RedirectMode::Manual;
+      }
+    }
+  }
+  JS::SetReservedSlot(request, std::to_underlying(Slots::RedirectMode),
+                      JS::Int32Value(std::to_underlying(redirect_mode)));
   // 23.  If `init["integrity"]` exists, then set `request`’s integrity metadata
   // to it.
   // 24.  If `init["keepalive"]` exists, then set `request`’s keepalive to it.
@@ -1993,6 +2080,8 @@ bool Request::initialize(JSContext *cx, JS::HandleObject request, JS::HandleValu
     }
 
     JS::SetReservedSlot(request, std::to_underlying(Slots::HasBody), JS::BooleanValue(true));
+    JS::SetReservedSlot(request, std::to_underlying(Slots::BodySource),
+                        JS::GetReservedSlot(input_request, std::to_underlying(Slots::BodySource)));
   }
 
   // 42.  Set this’s requests body to `finalBody`.
@@ -3261,9 +3350,23 @@ bool ResponseFutureTask::run(api::Engine *engine) {
   }
 
   auto *response = maybe_response.value();
+
+  bool followed = false;
+  if (!maybe_follow_redirect(cx, request, response, &followed)) {
+    return RejectPromiseWithPendingError(cx, response_promise);
+  }
+  if (followed) {
+    return cancel(engine);
+  }
+
   RootedObject response_obj(cx, Response::create_incoming(cx, response));
   if (!response_obj) {
     return false;
+  }
+  if (JS::GetReservedSlot(request, std::to_underlying(Request::Slots::RedirectCount)).toInt32() >
+      0) {
+    JS::SetReservedSlot(response_obj, std::to_underlying(Response::Slots::Redirected),
+                        JS::TrueValue());
   }
 
   RootedObject signal(cx, Request::signal(request));

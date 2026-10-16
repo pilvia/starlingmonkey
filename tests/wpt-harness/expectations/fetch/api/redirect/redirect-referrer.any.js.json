@@ -15,7 +15,7 @@
     "status": "FAIL"
   },
   "Same origin redirection, empty init, no-referrer redirect header ": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Same origin redirection, empty init, strict-origin redirect header ": {
     "status": "FAIL"
@@ -39,7 +39,7 @@
     "status": "FAIL"
   },
   "Same origin redirection, empty redirect header, no-referrer init ": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Same origin redirection, empty redirect header, strict-origin init ": {
     "status": "FAIL"
@@ -54,7 +54,7 @@
     "status": "FAIL"
   },
   "Cross origin redirection, empty init, same-origin redirect header ": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Cross origin redirection, empty init, origin redirect header ": {
     "status": "FAIL"
@@ -63,7 +63,7 @@
     "status": "FAIL"
   },
   "Cross origin redirection, empty init, no-referrer redirect header ": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Cross origin redirection, empty init, strict-origin redirect header ": {
     "status": "FAIL"
@@ -78,7 +78,7 @@
     "status": "FAIL"
   },
   "Cross origin redirection, empty redirect header, same-origin init ": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Cross origin redirection, empty redirect header, origin init ": {
     "status": "FAIL"
@@ -87,7 +87,7 @@
     "status": "FAIL"
   },
   "Cross origin redirection, empty redirect header, no-referrer init ": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Cross origin redirection, empty redirect header, strict-origin init ": {
     "status": "FAIL"

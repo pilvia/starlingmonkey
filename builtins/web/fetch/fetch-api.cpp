@@ -5,11 +5,13 @@
 #include "fetch-utils.h"
 #include "headers.h"
 #include "mozilla/Assertions.h"
+#include "mozilla/Utf8.h"
 #include "mozilla/WeakPtr.h"
 #include "request-response.h"
 
 #include "../abort/abort-signal.h"
 #include "../blob.h"
+#include "../form-data/form-data.h"
 #include "../url.h"
 
 #include <fmt/format.h>
@@ -141,6 +143,231 @@ bool fetch_https(JSContext *cx, HandleObject request_obj, HandleObject response_
   SetReservedSlot(request_obj, static_cast<uint32_t>(Request::Slots::PendingResponseHandle),
                   PrivateValue(pending_handle));
 
+  return true;
+}
+
+namespace {
+
+constexpr int32_t MAX_REDIRECTS = 20;
+
+bool is_redirect_status(uint16_t status) {
+  return status == 301 || status == 302 || status == 303 || status == 307 || status == 308;
+}
+
+jsurl::SpecString spec_string(std::string_view str) {
+  return jsurl::SpecString(reinterpret_cast<uint8_t *>(const_cast<char *>(str.data())),
+                           str.size(), str.size());
+}
+
+std::string_view slice_view(jsurl::SpecSlice slice) {
+  return {reinterpret_cast<const char *>(slice.data), slice.len};
+}
+
+std::string_view spec_view(const jsurl::SpecString &str) {
+  return {reinterpret_cast<const char *>(str.data), str.len};
+}
+
+// A Location header is bytes. The URL parser takes UTF-8, so a value that isn't valid UTF-8 has
+// its non-ASCII bytes percent-encoded first, which is what browsers do (whatwg/fetch#883).
+std::string location_as_utf8(std::string_view bytes) {
+  if (mozilla::IsUtf8(mozilla::Span(bytes.data(), bytes.size()))) {
+    return std::string(bytes);
+  }
+  std::string out;
+  out.reserve(bytes.size() * 3);
+  for (unsigned char c : bytes) {
+    if (c < 0x80) {
+      out.push_back(static_cast<char>(c));
+    } else {
+      out += fmt::format("%{:02X}", c);
+    }
+  }
+  return out;
+}
+
+struct UrlDeleter {
+  void operator()(jsurl::JSUrl *url) const { jsurl::free_jsurl(url); }
+};
+using OwnedUrl = std::unique_ptr<jsurl::JSUrl, UrlDeleter>;
+
+} // namespace
+
+bool maybe_follow_redirect(JSContext *cx, HandleObject request,
+                           host_api::HttpIncomingResponse *response, bool *followed) {
+  *followed = false;
+
+  auto status_res = response->status();
+  if (status_res.is_err() || !is_redirect_status(status_res.unwrap())) {
+    return true;
+  }
+  uint16_t status = status_res.unwrap();
+
+  // Unlike a browser, which hands back an opaque-redirect filtered response, "manual" returns
+  // the redirect response itself, as Node, Deno and workerd do: a server reads its Location.
+  auto mode = Request::redirect_mode(request);
+  if (mode == Request::RedirectMode::Manual) {
+    return true;
+  }
+
+  // 3. Let locationURL be actualResponse's location URL given request's current URL's fragment.
+  auto headers_res = response->headers();
+  if (headers_res.is_err()) {
+    return true;
+  }
+  auto location_res = headers_res.unwrap()->get("location");
+  if (location_res.is_err()) {
+    return true;
+  }
+  auto location_values = std::move(location_res.unwrap());
+  // 4. If locationURL is null, then return response.
+  if (!location_values.has_value() || location_values->empty()) {
+    return true;
+  }
+  // A header list with more than one Location doesn't parse as a single URL: failure.
+  if (location_values->size() > 1) {
+    return api::throw_error(cx, FetchErrors::FetchNetworkError);
+  }
+
+  RootedValue current_url_val(cx, RequestOrResponse::url(request));
+  auto current_url = core::encode(cx, current_url_val);
+  if (!current_url) {
+    return false;
+  }
+  auto base_str = spec_string(std::string_view(current_url));
+  OwnedUrl base(jsurl::new_jsurl(&base_str));
+  if (!base) {
+    return api::throw_error(cx, FetchErrors::FetchNetworkError);
+  }
+  auto location_utf8 = location_as_utf8(std::string_view(location_values->front()));
+  auto location_str = spec_string(location_utf8);
+  OwnedUrl location(jsurl::new_jsurl_with_base(&location_str, base.get()));
+  // 5. If locationURL is failure, then return a network error.
+  if (!location) {
+    return api::throw_error(cx, FetchErrors::FetchNetworkError);
+  }
+
+  // 6. If locationURL's scheme is not an HTTP(S) scheme, then return a network error.
+  auto scheme = slice_view(jsurl::protocol(location.get()));
+  if (scheme != "http:" && scheme != "https:") {
+    return api::throw_error(cx, FetchErrors::FetchNetworkError);
+  }
+
+  // Step 4 of main fetch: "error" turns any redirect into a network error.
+  if (mode == Request::RedirectMode::Error) {
+    return api::throw_error(cx, FetchErrors::FetchNetworkError);
+  }
+
+  // 7. If request's redirect count is 20, then return a network error.
+  // 8. Increase request's redirect count by 1.
+  int32_t count =
+      JS::GetReservedSlot(request, std::to_underlying(Request::Slots::RedirectCount)).toInt32();
+  if (count >= MAX_REDIRECTS) {
+    return api::throw_error(cx, FetchErrors::FetchNetworkError);
+  }
+  JS::SetReservedSlot(request, std::to_underlying(Request::Slots::RedirectCount),
+                      JS::Int32Value(count + 1));
+
+  // 11. If internalResponse's status is not 303, request's body is non-null, and request's
+  // body's source is null, then return a network error.
+  RootedValue body_source(
+      cx, JS::GetReservedSlot(request, std::to_underlying(Request::Slots::BodySource)));
+  bool has_body = RequestOrResponse::has_body(request);
+  if (status != 303 && has_body && body_source.isUndefined()) {
+    return api::throw_error(cx, FetchErrors::FetchNetworkError);
+  }
+
+  RootedObject headers(cx, RequestOrResponse::headers(cx, request));
+  if (!headers) {
+    return false;
+  }
+
+  // 12. If one of the following is true
+  //   * internalResponse's status is 301 or 302 and request's method is `POST`
+  //   * internalResponse's status is 303 and request's method is not `GET` or `HEAD`
+  // then set request's method to `GET` and request's body to null, and remove every
+  // request-body-header name from request's header list.
+  RootedString method_str(cx, Request::method(request));
+  auto method = core::encode(cx, method_str);
+  if (!method) {
+    return false;
+  }
+  std::string_view method_view = method;
+  if (((status == 301 || status == 302) && method_view == "POST") ||
+      (status == 303 && method_view != "GET" && method_view != "HEAD")) {
+    method_str = JS_AtomizeString(cx, "GET");
+    if (!method_str) {
+      return false;
+    }
+    JS::SetReservedSlot(request, std::to_underlying(Request::Slots::Method),
+                        JS::StringValue(method_str));
+    method = core::encode(cx, method_str);
+    if (!method) {
+      return false;
+    }
+    has_body = false;
+    JS::SetReservedSlot(request, std::to_underlying(Request::Slots::HasBody), JS::FalseValue());
+    JS::SetReservedSlot(request, std::to_underlying(Request::Slots::BodyStream), JS::NullValue());
+    JS::SetReservedSlot(request, std::to_underlying(Request::Slots::BodySource),
+                        JS::UndefinedValue());
+    for (auto name : {"content-encoding", "content-language", "content-location", "content-type",
+                      "content-length"}) {
+      if (!Headers::remove_valid(cx, headers, name)) {
+        return false;
+      }
+    }
+  }
+
+  // 13. If request's current URL's origin is not same origin with locationURL's origin, then for
+  // each headerName of CORS non-wildcard request-header name, delete headerName from request's
+  // header list. That is `Authorization`; like Node and Deno we also drop the other credentials
+  // a server-side caller sets by hand, `Cookie` and `Proxy-Authorization`.
+  auto base_origin = jsurl::origin(base.get());
+  auto location_origin = jsurl::origin(location.get());
+  if (spec_view(base_origin) != spec_view(location_origin) ||
+      spec_view(base_origin) == "null") {
+    for (auto name : {"authorization", "cookie", "proxy-authorization"}) {
+      if (!Headers::remove_valid(cx, headers, name)) {
+        return false;
+      }
+    }
+  }
+
+  // 14. If request's body is non-null, then set request's body to the body of the result of
+  // safely extracting request's body's source.
+  if (has_body) {
+    JS::SetReservedSlot(request, std::to_underlying(Request::Slots::HasBody), JS::FalseValue());
+    JS::SetReservedSlot(request, std::to_underlying(Request::Slots::BodyUsed), JS::FalseValue());
+    JS::SetReservedSlot(request, std::to_underlying(Request::Slots::BodyStream), JS::NullValue());
+    // A FormData is serialized with a fresh boundary, so its Content-Type is derived again.
+    if (body_source.isObject() && form_data::FormData::is_instance(&body_source.toObject()) &&
+        !Headers::remove_valid(cx, headers, "content-type")) {
+      return false;
+    }
+    if (!Headers::remove_valid(cx, headers, "content-length") ||
+        !RequestOrResponse::extract_body(cx, request, body_source)) {
+      return false;
+    }
+  }
+
+  // 19-20. Append locationURL to request's URL list and fetch again.
+  auto href = slice_view(jsurl::href(location.get()));
+  RootedString href_str(cx, JS_NewStringCopyUTF8N(cx, JS::UTF8Chars(href.data(), href.size())));
+  if (!href_str) {
+    return false;
+  }
+  RootedValue href_val(cx, JS::StringValue(href_str));
+  RequestOrResponse::set_url(request, href_val);
+  HostString url = core::encode(cx, href_val);
+  if (!url) {
+    return false;
+  }
+
+  RootedObject response_promise(cx, Request::response_promise(request));
+  if (!fetch_https(cx, request, response_promise, std::move(method), std::move(url))) {
+    return false;
+  }
+
+  *followed = true;
   return true;
 }
 
