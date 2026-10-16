@@ -432,6 +432,40 @@ static bool trap(JSContext *cx, unsigned argc, JS::Value *vp) {
 }
 #endif
 
+// Performs the one-time ICU initialisation of the common Intl services during
+// pre-initialization, so the snapshot carries it. The first `format()` of a
+// service otherwise pays it in every request of a component that formats
+// inside a handler (11-17 ms measured, ~1 ms after this). Constructing a
+// formatter is not enough: the work happens on first use. One locale warms the
+// others, so the default locale is enough. A fixed date keeps the clock out of
+// the snapshot. A no-op in an engine built without Intl, and never fatal.
+static void warm_up_intl(JSContext *cx) {
+  static const char warm_up[] = R"JS(
+    if (typeof Intl === "object") {
+      const d = new Date(0);
+      new Intl.NumberFormat().format(1234.5);
+      new Intl.NumberFormat(undefined, { style: "currency", currency: "EUR" }).format(1234.5);
+      new Intl.DateTimeFormat().format(d);
+      new Intl.DateTimeFormat(undefined, { dateStyle: "long", timeStyle: "short" }).format(d);
+      d.toLocaleDateString(); d.toLocaleTimeString(); (1234.5).toLocaleString();
+      new Intl.Collator().compare("a", "b");
+      new Intl.PluralRules().select(1);
+      new Intl.RelativeTimeFormat().format(-1, "day");
+      new Intl.ListFormat().format(["a", "b"]);
+      "a".normalize("NFD");
+    }
+  )JS";
+  JS::CompileOptions opts(cx);
+  opts.setFileAndLine("<intl-warm-up>", 1);
+  JS::SourceText<mozilla::Utf8Unit> source;
+  RootedValue result(cx);
+  if (!source.init(cx, warm_up, sizeof(warm_up) - 1, JS::SourceOwnership::Borrowed)
+      || !JS::Evaluate(cx, opts, source, &result)) {
+    TRACE("Intl warm-up failed; continuing without it");
+    JS_ClearPendingException(cx);
+  }
+}
+
 Engine::Engine(std::unique_ptr<EngineConfig> config) {
   // total_compute = 0;
   MOZ_ASSERT(!ENGINE);
@@ -473,6 +507,7 @@ Engine::Engine(std::unique_ptr<EngineConfig> config) {
 
   if (config_->pre_initialize) {
     state_ = EngineState::ScriptPreInitializing;
+    warm_up_intl(cx());
   } else {
     state_ = EngineState::Initialized;
     // Debugging isn't supported during wizening, so only try it when doing runtime evaluation.
