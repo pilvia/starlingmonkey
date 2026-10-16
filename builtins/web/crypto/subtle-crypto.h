@@ -37,6 +37,10 @@ public:
   static bool importKey(JSContext *cx, unsigned argc, JS::Value *vp);
   static bool sign(JSContext *cx, unsigned argc, JS::Value *vp);
   static bool verify(JSContext *cx, unsigned argc, JS::Value *vp);
+  static bool encrypt(JSContext *cx, unsigned argc, JS::Value *vp);
+  static bool decrypt(JSContext *cx, unsigned argc, JS::Value *vp);
+  static bool generateKey(JSContext *cx, unsigned argc, JS::Value *vp);
+  static bool exportKey(JSContext *cx, unsigned argc, JS::Value *vp);
 
   static bool init_class(JSContext *cx, JS::HandleObject global);
 };

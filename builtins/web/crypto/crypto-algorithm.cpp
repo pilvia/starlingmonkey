@@ -1297,12 +1297,14 @@ CryptoAlgorithmImportKey::normalize(JSContext *cx, JS::HandleValue value) {
   case CryptoAlgorithmIdentifier::Ed25519: {
     return std::make_unique<CryptoAlgorithmEd25519_Import>();
   }
-  case CryptoAlgorithmIdentifier::RSA_PSS:
-  case CryptoAlgorithmIdentifier::RSA_OAEP:
   case CryptoAlgorithmIdentifier::AES_CTR:
   case CryptoAlgorithmIdentifier::AES_CBC:
   case CryptoAlgorithmIdentifier::AES_GCM:
-  case CryptoAlgorithmIdentifier::AES_KW:
+  case CryptoAlgorithmIdentifier::AES_KW: {
+    return std::make_unique<CryptoAlgorithmAES_Import>(identifier);
+  }
+  case CryptoAlgorithmIdentifier::RSA_PSS:
+  case CryptoAlgorithmIdentifier::RSA_OAEP:
   case CryptoAlgorithmIdentifier::ECDH:
   case CryptoAlgorithmIdentifier::HKDF:
   case CryptoAlgorithmIdentifier::PBKDF2: {
