@@ -97,6 +97,10 @@ public:
   static bool set_valid_if_undefined(JSContext *cx, JS::HandleObject self, string_view name,
                                      string_view value);
 
+  /// Removes every header named `name` (lowercase) from `self`, bypassing the guard.
+  /// For the engine's own use, e.g. when following a redirect.
+  static bool remove_valid(JSContext *cx, JS::HandleObject self, string_view name);
+
   /// Validates and normalizes the name and value.
   static host_api::HostString validate_header_name(JSContext *cx, HandleValue name_val,
                                                    const char *fun_name);
