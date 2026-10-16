@@ -88,6 +88,7 @@ add_builtin(
         builtins/web/streams/decompression-stream.cpp
         builtins/web/streams/native-stream-sink.cpp
         builtins/web/streams/native-stream-source.cpp
+        builtins/web/streams/readable-stream-async-iterator.cpp
         builtins/web/streams/streams.cpp
         builtins/web/streams/transform-stream.cpp
         builtins/web/streams/transform-stream-default-controller.cpp

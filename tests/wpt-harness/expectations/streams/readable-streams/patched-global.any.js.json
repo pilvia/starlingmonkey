@@ -6,7 +6,7 @@
     "status": "PASS"
   },
   "ReadableStream async iterator should use the original values of getReader() and ReadableStreamDefaultReader methods": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "tee() should not call Promise.prototype.then()": {
     "status": "PASS"
