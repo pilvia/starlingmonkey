@@ -204,208 +204,208 @@
     "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [sign])": {
     "status": "PASS"
@@ -612,208 +612,208 @@
     "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [sign])": {
     "status": "PASS"
@@ -1020,208 +1020,208 @@
     "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-CTR}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad algorithm property: generateKey({length: 64, name: AES-CTR}, false, [encrypt])": {
     "status": "PASS"
