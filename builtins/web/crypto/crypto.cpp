@@ -24,6 +24,11 @@ using dom_exception::DOMException;
  */
 bool Crypto::get_random_values(JSContext *cx, unsigned argc, JS::Value *vp) {
   METHOD_HEADER(1)
+  // Bytes drawn while the module scope is evaluated for the snapshot would be
+  // shared by every instance and readable from the component. Unlike
+  // Math.random, which falls back to a fixed-seed generator there, crypto's
+  // randomness is only available while handling a request.
+  REQUEST_HANDLER_ONLY("crypto.getRandomValues")
 
   if (!args[0].isObject() || !is_int_typed_array(&args[0].toObject())) {
     DOMException::raise(cx, "crypto.getRandomValues: input must be an integer-typed TypedArray",
@@ -62,6 +67,7 @@ bool Crypto::get_random_values(JSContext *cx, unsigned argc, JS::Value *vp) {
 
 bool Crypto::random_uuid(JSContext *cx, unsigned argc, JS::Value *vp) {
   METHOD_HEADER(0)
+  REQUEST_HANDLER_ONLY("crypto.randomUUID")
 
   auto maybe_uuid = random_uuid_v4(cx);
   if (!maybe_uuid.has_value()) {
