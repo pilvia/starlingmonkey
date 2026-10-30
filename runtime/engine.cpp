@@ -226,10 +226,33 @@ static void rejection_tracker(JSContext *cx, bool mutedErrors, JS::HandleObject 
   }
 }
 
+// Math.random() before the engine is initialized, i.e. while the module scope
+// is evaluated for the snapshot. Pre-initialization cannot call the host, so
+// the module scope draws from this fixed-seed generator (splitmix64) instead.
+// Whatever it draws is a constant of the snapshot, like everything else the
+// module scope computed, and the same input always snapshots to the same
+// bytes. Requests never see this generator: once the engine is initialized,
+// every call asks the host again. `Math.random` is not a cryptographic source;
+// crypto's randomness stays request-only (see `Crypto::get_random_values`).
+static uint64_t pre_init_random_state = 0x9E3779B97F4A7C15;
+
+static uint32_t pre_init_random_u32() {
+  uint64_t z = (pre_init_random_state += 0x9E3779B97F4A7C15);
+  z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9;
+  z = (z ^ (z >> 27)) * 0x94D049BB133111EB;
+  return static_cast<uint32_t>((z ^ (z >> 31)) >> 32);
+}
+
 bool math_random(JSContext *cx, unsigned argc, Value *vp) {
-  auto res = host_api::Random::get_u32();
-  MOZ_ASSERT(!res.is_err());
-  double newvalue = static_cast<double>(res.unwrap()) / std::pow(2.0, 32.0);
+  uint32_t bits;
+  if (Engine::get(cx)->state() != EngineState::Initialized) {
+    bits = pre_init_random_u32();
+  } else {
+    auto res = host_api::Random::get_u32();
+    MOZ_ASSERT(!res.is_err());
+    bits = res.unwrap();
+  }
+  double newvalue = static_cast<double>(bits) / std::pow(2.0, 32.0);
 
   JS::CallArgs args = CallArgsFromVp(argc, vp);
   args.rval().setDouble(newvalue);
