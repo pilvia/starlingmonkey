@@ -204,208 +204,208 @@
     "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 128, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [sign])": {
     "status": "PASS"
@@ -612,208 +612,208 @@
     "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 192, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [sign])": {
     "status": "PASS"
@@ -1020,208 +1020,208 @@
     "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, encrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decrypt, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, encrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decrypt, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, encapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, encrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decrypt, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateKey])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decrypt, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, encrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decrypt, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, wrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad usages: generateKey({length: 256, name: AES-GCM}, true, [encrypt, decrypt, wrapKey, unwrapKey, encrypt, decrypt, wrapKey, unwrapKey, decapsulateBits])": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "Bad algorithm property: generateKey({length: 64, name: AES-GCM}, false, [encrypt])": {
     "status": "PASS"
