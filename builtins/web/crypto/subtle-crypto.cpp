@@ -459,6 +459,11 @@ bool SubtleCrypto::decrypt(JSContext *cx, unsigned argc, JS::Value *vp) {
 // https://w3c.github.io/webcrypto/#SubtleCrypto-method-generateKey
 bool SubtleCrypto::generateKey(JSContext *cx, unsigned argc, JS::Value *vp) {
   JS::CallArgs args = CallArgsFromVp(argc, vp);
+  // A key generated while the module scope is evaluated for the snapshot would
+  // be one key for every instance, readable from the component. This throws
+  // instead of rejecting, as `fetch` does there: an un-awaited rejection
+  // during pre-initialization is only reported, and the build must fail.
+  REQUEST_HANDLER_ONLY("crypto.subtle.generateKey")
   if (!args.requireAtLeast(cx, "SubtleCrypto.generateKey", 3)) {
     return ReturnPromiseRejectedWithPendingError(cx, args);
   }

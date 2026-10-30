@@ -43,6 +43,12 @@ const JSFunctionSpec Performance::static_methods[] = {JS_FS_END};
 const JSPropertySpec Performance::static_properties[] = {JS_PS_END};
 
 bool Performance::create(JSContext *cx, JS::HandleObject global) {
+  // The global's time origin, until a request sets its own: without it,
+  // `performance.now()` in the module scope aborted the snapshot on an empty
+  // optional.
+  if (!timeOrigin.has_value()) {
+    timeOrigin.emplace(std::chrono::high_resolution_clock::now());
+  }
   JS::RootedObject performance(
       cx, JS_NewObjectWithGivenProto(cx, &Performance::class_, Performance::proto_obj));
   if (!performance) {
