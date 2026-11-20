@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <js/CompilationAndEvaluation.h>
 #include <js/MapAndSet.h>
+#include <js/Modules.h>
+#include <js/Promise.h>
 #include <js/ScriptPrivate.h>
 #include <js/Value.h>
 #include <jsfriendapi.h>
@@ -307,6 +309,37 @@ static JSObject *get_builtin_module(JSContext *cx, HandleValue id, HandleObject 
   return module;
 }
 
+static bool link_loaded_module(JSContext *cx, HandleValue host_defined) {
+  RootedObject module(cx, &host_defined.toObject());
+  return JS::ModuleLink(cx, module);
+}
+
+static bool reject_loaded_module(JSContext *cx, HandleValue host_defined, HandleValue error) {
+  JS_SetPendingException(cx, error);
+  return true;
+}
+
+// Hands `module` back to the engine for `module_request`. A dynamic `import()` (its payload is
+// the promise it returns) needs the module's own graph loaded and linked first: the engine only
+// evaluates it. Without that every dynamic import failed with "module record has unexpected
+// status: New", builtin modules and files alike.
+static bool finish_loading(JSContext *cx, JS::HandleScript referrer,
+                           JS::HandleObject module_request, JS::HandleValue payload,
+                           JS::HandleObject module) {
+  if (payload.isObject()) {
+    RootedObject payload_obj(cx, &payload.toObject());
+    if (JS::IsPromiseObject(payload_obj)) {
+      RootedValue host_defined(cx, ObjectValue(*module));
+      if (!JS::LoadRequestedModules(cx, module, host_defined, link_loaded_module,
+                                    reject_loaded_module) ||
+          JS_IsExceptionPending(cx)) {
+        return JS::FinishLoadingImportedModuleFailedWithPendingException(cx, payload);
+      }
+    }
+  }
+  return FinishLoadingImportedModule(cx, referrer, module_request, payload, module, false);
+}
+
 bool module_load_hook(JSContext *cx, JS::HandleScript referrer, JS::HandleObject module_reques,
                       JS::HandleValue hostDefined, JS::HandleValue payload, uint32_t lineNumber,
                       JS::ColumnNumberOneOrigin columnNumber) {
@@ -332,7 +365,7 @@ bool module_load_hook(JSContext *cx, JS::HandleScript referrer, JS::HandleObject
     if (!result) {
       return false;
     }
-    return FinishLoadingImportedModule(cx, referrer, module_reques, payload, result, false);
+    return finish_loading(cx, referrer, module_reques, payload, result);
   }
 
   RootedValue ref_priv(cx);
@@ -358,7 +391,7 @@ bool module_load_hook(JSContext *cx, JS::HandleScript referrer, JS::HandleObject
   if (!result) {
     return false;
   }
-  return FinishLoadingImportedModule(cx, referrer, module_reques, payload, result, false);
+  return finish_loading(cx, referrer, module_reques, payload, result);
 }
 
 bool module_metadata_hook(JSContext *cx, HandleValue ref_priv, HandleObject meta_obj) {
