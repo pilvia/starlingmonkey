@@ -2,6 +2,7 @@
 #define BUILTINS_WEB_CRYPTO_CRYPTO_ALGORITHM_H
 #include <optional>
 #include <span>
+#include <vector>
 
 #include "builtin.h"
 #include "crypto-key.h"
@@ -259,6 +260,112 @@ public:
                       CryptoKeyUsages usages) override;
   JSObject *toObject(JSContext *cx);
 };
+
+// https://w3c.github.io/webcrypto/#aes-ctr-operations (import key), shared by
+// AES-CTR, AES-GCM and AES-KW: the three differ only in their name, the JWK
+// `alg` suffix, and the usages they accept. AES-CBC is upstream's
+// CryptoAlgorithmAES_CBC_Import, whose keys this file's operations share.
+class CryptoAlgorithmAES_Import final : public CryptoAlgorithmImportKey {
+  CryptoAlgorithmIdentifier identifier_;
+
+public:
+  // The key length in bits, known once the key data has been read.
+  size_t length = 0;
+
+  CryptoAlgorithmAES_Import(CryptoAlgorithmIdentifier identifier) : identifier_{identifier} {};
+
+  [[nodiscard]] const char *name() const noexcept override { return algorithmName(identifier_); };
+  CryptoAlgorithmIdentifier identifier() final { return identifier_; };
+
+  JSObject *importKey(JSContext *cx, CryptoKeyFormat format, JS::HandleValue key_data,
+                      bool extractable, CryptoKeyUsages usages) override;
+  JSObject *importKey(JSContext *cx, CryptoKeyFormat format, KeyData key_data, bool extractable,
+                      CryptoKeyUsages usages) override;
+};
+
+// https://w3c.github.io/webcrypto/#aes-gcm-operations
+class CryptoAlgorithmAES_GCM_Encrypt_Decrypt final : public CryptoAlgorithmEncryptDecrypt {
+public:
+  std::vector<uint8_t> iv;
+  std::optional<std::vector<uint8_t>> additionalData;
+  uint8_t tagLength = 128;
+
+  [[nodiscard]] const char *name() const noexcept override { return "AES-GCM"; };
+  CryptoAlgorithmIdentifier identifier() final { return CryptoAlgorithmIdentifier::AES_GCM; };
+
+  // https://w3c.github.io/webcrypto/#aes-gcm-params
+  static std::unique_ptr<CryptoAlgorithmAES_GCM_Encrypt_Decrypt> fromParameters(JSContext *cx,
+                                                                JS::HandleObject parameters);
+  JSObject *encrypt(JSContext *cx, JS::HandleObject key, std::span<uint8_t> data) override;
+  JSObject *decrypt(JSContext *cx, JS::HandleObject key, std::span<uint8_t> data) override;
+};
+
+// https://w3c.github.io/webcrypto/#aes-ctr-operations
+class CryptoAlgorithmAES_CTR_Encrypt_Decrypt final : public CryptoAlgorithmEncryptDecrypt {
+public:
+  std::vector<uint8_t> counter;
+  uint8_t length = 0;
+
+  [[nodiscard]] const char *name() const noexcept override { return "AES-CTR"; };
+  CryptoAlgorithmIdentifier identifier() final { return CryptoAlgorithmIdentifier::AES_CTR; };
+
+  // https://w3c.github.io/webcrypto/#aes-ctr-params
+  static std::unique_ptr<CryptoAlgorithmAES_CTR_Encrypt_Decrypt> fromParameters(JSContext *cx,
+                                                                JS::HandleObject parameters);
+  JSObject *encrypt(JSContext *cx, JS::HandleObject key, std::span<uint8_t> data) override;
+  JSObject *decrypt(JSContext *cx, JS::HandleObject key, std::span<uint8_t> data) override;
+};
+
+class CryptoAlgorithmGenerateKey : public CryptoAlgorithm {
+public:
+  virtual JSObject *generateKey(JSContext *cx, bool extractable, CryptoKeyUsages usages) = 0;
+  static std::unique_ptr<CryptoAlgorithmGenerateKey> normalize(JSContext *cx,
+                                                               JS::HandleValue value);
+};
+
+// https://w3c.github.io/webcrypto/#aes-keygen-params
+class CryptoAlgorithmAES_GenerateKey final : public CryptoAlgorithmGenerateKey {
+  CryptoAlgorithmIdentifier identifier_;
+
+public:
+  uint16_t length;
+
+  CryptoAlgorithmAES_GenerateKey(CryptoAlgorithmIdentifier identifier, uint16_t length)
+      : identifier_{identifier}, length{length} {};
+
+  [[nodiscard]] const char *name() const noexcept override { return algorithmName(identifier_); };
+  CryptoAlgorithmIdentifier identifier() final { return identifier_; };
+
+  static std::unique_ptr<CryptoAlgorithmAES_GenerateKey>
+  fromParameters(JSContext *cx, CryptoAlgorithmIdentifier identifier, JS::HandleObject parameters);
+  JSObject *generateKey(JSContext *cx, bool extractable, CryptoKeyUsages usages) override;
+};
+
+// https://w3c.github.io/webcrypto/#hmac-keygen-params
+class CryptoAlgorithmHMAC_GenerateKey final : public CryptoAlgorithmGenerateKey {
+public:
+  CryptoAlgorithmIdentifier hashIdentifier;
+  std::optional<uint32_t> length;
+
+  CryptoAlgorithmHMAC_GenerateKey(CryptoAlgorithmIdentifier hashIdentifier,
+                                  std::optional<uint32_t> length)
+      : hashIdentifier{hashIdentifier}, length{length} {};
+
+  [[nodiscard]] const char *name() const noexcept override { return "HMAC"; };
+  CryptoAlgorithmIdentifier identifier() final { return CryptoAlgorithmIdentifier::HMAC; };
+
+  static std::unique_ptr<CryptoAlgorithmHMAC_GenerateKey> fromParameters(JSContext *cx,
+                                                                         JS::HandleObject parameters);
+  JSObject *generateKey(JSContext *cx, bool extractable, CryptoKeyUsages usages) override;
+};
+
+// https://w3c.github.io/webcrypto/#SubtleCrypto-method-exportKey, for the
+// secret keys (HMAC and AES): "raw" and "jwk".
+JSObject *exportSecretKey(JSContext *cx, CryptoKeyFormat format, JS::HandleObject key);
+
+// Defined in crypto-algorithm.cpp; shared with crypto-algorithm-aes.cpp.
+JS::Result<CryptoAlgorithmIdentifier> normalizeIdentifier(JSContext *cx, JS::HandleValue value);
+JS::Result<CryptoAlgorithmIdentifier> toHashIdentifier(JSContext *cx, JS::HandleValue value);
 
 class CryptoAlgorithmDigest : public CryptoAlgorithm {
 public:

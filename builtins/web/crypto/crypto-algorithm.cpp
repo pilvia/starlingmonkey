@@ -801,9 +801,13 @@ CryptoAlgorithmEncryptDecrypt::normalize(JSContext *cx, JS::HandleValue value) {
   case CryptoAlgorithmIdentifier::AES_CBC: {
     return CryptoAlgorithmAES_CBC_Encrypt_Decrypt::fromParameters(cx, params);
   }
+  case CryptoAlgorithmIdentifier::AES_CTR: {
+    return CryptoAlgorithmAES_CTR_Encrypt_Decrypt::fromParameters(cx, params);
+  }
+  case CryptoAlgorithmIdentifier::AES_GCM: {
+    return CryptoAlgorithmAES_GCM_Encrypt_Decrypt::fromParameters(cx, params);
+  }
   case CryptoAlgorithmIdentifier::RSA_OAEP:
-  case CryptoAlgorithmIdentifier::AES_CTR:
-  case CryptoAlgorithmIdentifier::AES_GCM:
   case CryptoAlgorithmIdentifier::AES_KW: {
     DOMException::raise(cx, "Supplied algorithm is not yet supported", "NotSupportedError");
     return nullptr;
@@ -1368,11 +1372,14 @@ CryptoAlgorithmImportKey::normalize(JSContext *cx, JS::HandleValue value) {
   case CryptoAlgorithmIdentifier::AES_CBC: {
     return std::make_unique<CryptoAlgorithmAES_CBC_Import>();
   }
-  case CryptoAlgorithmIdentifier::RSA_PSS:
-  case CryptoAlgorithmIdentifier::RSA_OAEP:
+  // AES-CTR, AES-GCM and AES-KW share one import operation (ours; upstream has AES-CBC only).
   case CryptoAlgorithmIdentifier::AES_CTR:
   case CryptoAlgorithmIdentifier::AES_GCM:
-  case CryptoAlgorithmIdentifier::AES_KW:
+  case CryptoAlgorithmIdentifier::AES_KW: {
+    return std::make_unique<CryptoAlgorithmAES_Import>(identifier);
+  }
+  case CryptoAlgorithmIdentifier::RSA_PSS:
+  case CryptoAlgorithmIdentifier::RSA_OAEP:
   case CryptoAlgorithmIdentifier::ECDH:
   case CryptoAlgorithmIdentifier::HKDF: {
     DOMException::raise(cx, "Supplied algorithm is not yet supported", "NotSupportedError");

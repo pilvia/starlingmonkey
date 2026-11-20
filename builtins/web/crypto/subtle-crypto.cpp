@@ -612,6 +612,147 @@ bool SubtleCrypto::decrypt(JSContext *cx, unsigned argc, JS::Value *vp) {
   return encryptOrDecrypt(cx, args, false);
 }
 
+// Promise<(CryptoKey or CryptoKeyPair)> generateKey(AlgorithmIdentifier algorithm,
+//                                                    boolean extractable,
+//                                                    sequence<KeyUsage> keyUsages);
+// https://w3c.github.io/webcrypto/#SubtleCrypto-method-generateKey
+bool SubtleCrypto::generateKey(JSContext *cx, unsigned argc, JS::Value *vp) {
+  JS::CallArgs args = CallArgsFromVp(argc, vp);
+  if (!args.requireAtLeast(cx, "SubtleCrypto.generateKey", 3)) {
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+  if (!check_receiver(cx, args.thisv(), "SubtleCrypto.generateKey")) {
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+
+  // 1. Let algorithm, extractable and usages be the algorithm, extractable and
+  // keyUsages parameters passed to the generateKey() method, respectively.
+  auto algorithm = args.get(0);
+  bool extractable = JS::ToBoolean(args.get(1));
+  auto usages_result = CryptoKeyUsages::from(cx, args.get(2));
+  if (usages_result.isErr()) {
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+  auto usages = usages_result.unwrap();
+
+  // 2. Let normalizedAlgorithm be the result of normalizing an algorithm, with
+  // alg set to algorithm and op set to "generateKey".
+  // 3. If an error occurred, return a Promise rejected with normalizedAlgorithm.
+  auto normalizedAlgorithm = CryptoAlgorithmGenerateKey::normalize(cx, algorithm);
+  if (!normalizedAlgorithm) {
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+
+  // 4. Let promise be a new Promise.
+  JS::RootedObject promise(cx, JS::NewPromiseObject(cx, nullptr));
+  if (!promise) {
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+  // 5. Return promise and perform the remaining steps in parallel.
+  args.rval().setObject(*promise);
+
+  // 7. Let result be the result of performing the generate key operation
+  // specified by normalizedAlgorithm using algorithm, extractable and usages.
+  JS::RootedObject result(cx, normalizedAlgorithm->generateKey(cx, extractable, usages));
+  if (!result) {
+    return RejectPromiseWithPendingError(cx, promise);
+  }
+
+  // 8. If result is a CryptoKey object: if the [[type]] internal slot of result
+  // is "secret" or "private" and usages is empty, then throw a SyntaxError.
+  if (CryptoKey::is_instance(result) && CryptoKey::type(result) != CryptoKeyType::Public &&
+      usages.isEmpty()) {
+    DOMException::raise(cx, "A secret or private key needs at least one usage", "SyntaxError");
+    return RejectPromiseWithPendingError(cx, promise);
+  }
+
+  // 10. Resolve promise with result.
+  JS::RootedValue result_val(cx, JS::ObjectValue(*result));
+  JS::ResolvePromise(cx, promise, result_val);
+  return true;
+}
+
+// Promise<(ArrayBuffer or JsonWebKey)> exportKey(KeyFormat format, CryptoKey key);
+// https://w3c.github.io/webcrypto/#SubtleCrypto-method-exportKey
+bool SubtleCrypto::exportKey(JSContext *cx, unsigned argc, JS::Value *vp) {
+  JS::CallArgs args = CallArgsFromVp(argc, vp);
+  if (!args.requireAtLeast(cx, "SubtleCrypto.exportKey", 2)) {
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+  if (!check_receiver(cx, args.thisv(), "SubtleCrypto.exportKey")) {
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+
+  // 1. Let format and key be the format and key parameters passed to the
+  // exportKey() method, respectively. Both are WebIDL conversions, so a value
+  // outside the KeyFormat enum or a non-CryptoKey is a TypeError.
+  CryptoKeyFormat format;
+  {
+    auto format_chars = core::encode(cx, args.get(0));
+    if (!format_chars.ptr) {
+      return ReturnPromiseRejectedWithPendingError(cx, args);
+    }
+    std::string_view format_string = format_chars;
+    if (format_string == "raw") {
+      format = CryptoKeyFormat::Raw;
+    } else if (format_string == "jwk") {
+      format = CryptoKeyFormat::Jwk;
+    } else if (format_string == "spki") {
+      format = CryptoKeyFormat::Spki;
+    } else if (format_string == "pkcs8") {
+      format = CryptoKeyFormat::Pkcs8;
+    } else {
+      api::throw_error(cx, api::Errors::TypeError, "SubtleCrypto.exportKey", "format",
+                       "be one of 'raw', 'spki', 'pkcs8' or 'jwk'");
+      return ReturnPromiseRejectedWithPendingError(cx, args);
+    }
+  }
+  auto key_arg = args.get(1);
+  if (!CryptoKey::is_instance(key_arg)) {
+    api::throw_error(cx, api::Errors::TypeError, "SubtleCrypto.exportKey", "key",
+                     "be a CryptoKey object");
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+  JS::RootedObject key(cx, &key_arg.toObject());
+
+  // 2. Let promise be a new Promise.
+  JS::RootedObject promise(cx, JS::NewPromiseObject(cx, nullptr));
+  if (!promise) {
+    return ReturnPromiseRejectedWithPendingError(cx, args);
+  }
+  // 3. Return promise and perform the remaining steps in parallel.
+  args.rval().setObject(*promise);
+
+  // 5. If the name member of the [[algorithm]] internal slot of key does not
+  // identify a registered algorithm that supports the export key operation,
+  // then throw a NotSupportedError. Exporting is built for the secret keys
+  // (HMAC and AES) so far; PBKDF2 has no export key operation at all.
+  if (CryptoKey::type(key) != CryptoKeyType::Secret ||
+      CryptoKey::algorithm_identifier(key) == CryptoAlgorithmIdentifier::PBKDF2) {
+    DOMException::raise(cx, "Exporting this key type is not yet supported", "NotSupportedError");
+    return RejectPromiseWithPendingError(cx, promise);
+  }
+
+  // 6. If the [[extractable]] internal slot of key is false, then throw an
+  // InvalidAccessError.
+  if (!CryptoKey::extractable(key)) {
+    DOMException::raise(cx, "CryptoKey is not extractable", "InvalidAccessError");
+    return RejectPromiseWithPendingError(cx, promise);
+  }
+
+  // 7. Let result be the result of performing the export key operation
+  // specified by the [[algorithm]] internal slot of key using key and format.
+  JS::RootedObject result(cx, exportSecretKey(cx, format, key));
+  if (!result) {
+    return RejectPromiseWithPendingError(cx, promise);
+  }
+
+  // 8. Resolve promise with result.
+  JS::RootedValue result_val(cx, JS::ObjectValue(*result));
+  JS::ResolvePromise(cx, promise, result_val);
+  return true;
+}
+
 const JSFunctionSpec SubtleCrypto::static_methods[] = {
     JS_FS_END,
 };
@@ -625,6 +766,8 @@ const JSFunctionSpec SubtleCrypto::methods[] = {
     JS_FN("decrypt", decrypt, 3, JSPROP_ENUMERATE),
     JS_FN("digest", digest, 2, JSPROP_ENUMERATE),
     JS_FN("encrypt", encrypt, 3, JSPROP_ENUMERATE),
+    JS_FN("exportKey", exportKey, 2, JSPROP_ENUMERATE),
+    JS_FN("generateKey", generateKey, 3, JSPROP_ENUMERATE),
     JS_FN("importKey", importKey, 5, JSPROP_ENUMERATE),
     JS_FN("sign", sign, 3, JSPROP_ENUMERATE),
     JS_FN("verify", verify, 4, JSPROP_ENUMERATE),
