@@ -62,6 +62,7 @@ set(SOURCES
     runtime/encode.cpp
     runtime/decode.cpp
     runtime/engine.cpp
+    runtime/async_context.cpp
     runtime/event_loop.cpp
     runtime/builtin.cpp
     runtime/script_loader.cpp

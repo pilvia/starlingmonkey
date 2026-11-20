@@ -197,6 +197,50 @@ public:
 };
 
 
+/**
+ * The async context: the values that `AsyncLocalStorage` (`node:async_hooks`) reads,
+ * carried from where an asynchronous continuation is created to where it runs.
+ *
+ * The engine's job queue gives each promise reaction the context that was current when the
+ * reaction was registered (`then`, `await`), and timers keep the context of the call that
+ * scheduled them. Event listeners run in the context of the dispatch. A context is an immutable
+ * chain of frames, each binding or unbinding one key, so a captured context never changes.
+ */
+class AsyncContext {
+public:
+  /// The current context. Never null once the engine is initialized.
+  static JSObject *current();
+
+  /// A new context: `parent` with `key` bound to `value`.
+  static JSObject *with_value(JSContext *cx, HandleObject parent, HandleObject key,
+                              HandleValue value);
+
+  /// A new context: `parent` with `key` unbound.
+  static JSObject *without_value(JSContext *cx, HandleObject parent, HandleObject key);
+
+  /// The value `key` has in `context`. False when it is unbound there.
+  static bool lookup(JSObject *context, JSObject *key, JS::MutableHandleValue value);
+
+  /// Makes `context` current while it lives, and restores the previous one after.
+  class AutoEnter {
+    JS::Rooted<JSObject *> previous_;
+
+  public:
+    AutoEnter(JSContext *cx, HandleObject context);
+    ~AutoEnter();
+    AutoEnter(const AutoEnter &) = delete;
+    AutoEnter &operator=(const AutoEnter &) = delete;
+  };
+
+  /// Sets up the empty context and the job queue that carries contexts. Called once, while
+  /// the engine initializes.
+  static bool init(JSContext *cx);
+
+  /// Makes the empty context current again.
+  static void reset();
+};
+
+
 using TaskCompletionCallback = bool (*)(JSContext* cx, HandleObject receiver);
 
 class AsyncTask : public js::RefCounted<AsyncTask>, public mozilla::SupportsWeakPtr {
