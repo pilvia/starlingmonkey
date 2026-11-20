@@ -2089,10 +2089,7 @@ bool Request::initialize(JSContext *cx, JS::HandleObject request, JS::HandleValu
     // 2.  Set `finalBody` to the result of creating a proxy for `inputBody`.
 
     // All the above steps boil down to "if the input request has an unusable
-    // body, throw. Otherwise, use the body." Our implementation is a bit more
-    // involved, because we might not have a body reified as a ReadableStream at
-    // all, in which case we can directly append the input body to the new
-    // request's body with a single hostcall.
+    // body, throw. Otherwise, use the body."
 
     JS::RootedObject inputBody(cx, RequestOrResponse::body_stream(input_request));
 
@@ -2103,25 +2100,25 @@ bool Request::initialize(JSContext *cx, JS::HandleObject request, JS::HandleValu
       return false;
     }
 
+    // A body that was never reified as a ReadableStream is reified now. Appending it on the
+    // host side instead needs the new request's outgoing body, and a Request under
+    // construction has no host handle yet: `new Request(incoming)` and `fetch(incoming)` with
+    // a body dereferenced a null handle.
     if (!inputBody) {
-      // If `inputBody` is null, that means that it was never created, and hence
-      // content can't have access to it. Instead of reifying it here to pass it
-      // into a TransformStream, we just append the body on the host side and
-      // mark it as used on the input Request.
-      if (!RequestOrResponse::append_body(cx, request, input_request,
-                                          finish_outgoing_body_streaming,request)) {
-        return false;
-      }
-    } else {
-      inputBody = streams::TransformStream::create_rs_proxy(cx, inputBody);
+      inputBody = RequestOrResponse::create_body_stream(cx, input_request);
       if (!inputBody) {
         return false;
       }
-
-      streams::TransformStream::set_readable_used_as_body(cx, inputBody, request);
-      JS::SetReservedSlot(request, std::to_underlying(Slots::BodyStream),
-                          JS::ObjectValue(*inputBody));
     }
+
+    inputBody = streams::TransformStream::create_rs_proxy(cx, inputBody);
+    if (!inputBody) {
+      return false;
+    }
+
+    streams::TransformStream::set_readable_used_as_body(cx, inputBody, request);
+    JS::SetReservedSlot(request, std::to_underlying(Slots::BodyStream),
+                        JS::ObjectValue(*inputBody));
 
     JS::SetReservedSlot(request, std::to_underlying(Slots::HasBody), JS::BooleanValue(true));
     JS::SetReservedSlot(request, std::to_underlying(Slots::BodySource),
