@@ -2,6 +2,7 @@
 #include "encode.h"
 #include "request-response.h"
 
+#include "../abort/abort-signal.h"
 #include "../dom-exception.h"
 #include "../event/event-target.h"
 #include "../event/global-event-target.h"
@@ -124,6 +125,19 @@ JSObject *FetchEvent::prepare_downstream_request(JSContext *cx) {
   }
 
   Request::init_slots(request);
+
+  // Every Request has a signal (https://fetch.spec.whatwg.org/#request-signal), the one a
+  // fetch event carries included. init_slots leaves the slot null for the constructor to fill,
+  // and nothing else filled it here, so reading `request.signal`, copying the request or
+  // passing it to fetch() read a null as an object. A signal that follows no others is one
+  // that nothing aborts: the request lives as long as the instance does.
+  JS::RootedObject signal(cx, builtins::web::abort::AbortSignal::create_with_signals(
+                                  cx, JS::HandleValueArray::empty()));
+  if (!signal) {
+    return nullptr;
+  }
+  JS::SetReservedSlot(request, std::to_underlying(Request::Slots::Signal),
+                      JS::ObjectValue(*signal));
   return request;
 }
 
