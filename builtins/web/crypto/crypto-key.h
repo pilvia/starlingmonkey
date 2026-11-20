@@ -172,6 +172,8 @@ public:
   static NamedCurve named_curve(JS::HandleObject self);
   static EVP_PKEY *key(JSObject *self);
   static std::span<uint8_t> keyData(JSObject *self);
+  static bool extractable(JSObject *self);
+  static CryptoKeyUsages usages(JSObject *self);
   static bool canSign(JS::HandleObject self);
   static bool canVerify(JS::HandleObject self);
   static bool canDeriveBits(JS::HandleObject self);

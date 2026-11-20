@@ -39,10 +39,10 @@
     "status": "PASS"
   },
   "ECDSA P-256 with SHA-1 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-256 with SHA-1 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-256 with SHA-1 verification failure due to altered signature": {
     "status": "PASS"
@@ -93,10 +93,10 @@
     "status": "PASS"
   },
   "ECDSA P-256 with SHA-256 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-256 with SHA-256 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-256 with SHA-256 verification failure due to altered signature": {
     "status": "PASS"
@@ -147,10 +147,10 @@
     "status": "PASS"
   },
   "ECDSA P-256 with SHA-384 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-256 with SHA-384 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-256 with SHA-384 verification failure due to altered signature": {
     "status": "PASS"
@@ -201,10 +201,10 @@
     "status": "PASS"
   },
   "ECDSA P-256 with SHA-512 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-256 with SHA-512 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-256 with SHA-512 verification failure due to altered signature": {
     "status": "PASS"
@@ -255,10 +255,10 @@
     "status": "PASS"
   },
   "ECDSA P-384 with SHA-1 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-384 with SHA-1 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-384 with SHA-1 verification failure due to altered signature": {
     "status": "PASS"
@@ -309,10 +309,10 @@
     "status": "PASS"
   },
   "ECDSA P-384 with SHA-256 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-384 with SHA-256 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-384 with SHA-256 verification failure due to altered signature": {
     "status": "PASS"
@@ -363,10 +363,10 @@
     "status": "PASS"
   },
   "ECDSA P-384 with SHA-384 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-384 with SHA-384 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-384 with SHA-384 verification failure due to altered signature": {
     "status": "PASS"
@@ -417,10 +417,10 @@
     "status": "PASS"
   },
   "ECDSA P-384 with SHA-512 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-384 with SHA-512 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-384 with SHA-512 verification failure due to altered signature": {
     "status": "PASS"
@@ -471,10 +471,10 @@
     "status": "PASS"
   },
   "ECDSA P-521 with SHA-1 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-521 with SHA-1 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-521 with SHA-1 verification failure due to altered signature": {
     "status": "PASS"
@@ -525,10 +525,10 @@
     "status": "PASS"
   },
   "ECDSA P-521 with SHA-256 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-521 with SHA-256 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-521 with SHA-256 verification failure due to altered signature": {
     "status": "PASS"
@@ -579,10 +579,10 @@
     "status": "PASS"
   },
   "ECDSA P-521 with SHA-384 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-521 with SHA-384 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-521 with SHA-384 verification failure due to altered signature": {
     "status": "PASS"
@@ -633,10 +633,10 @@
     "status": "PASS"
   },
   "ECDSA P-521 with SHA-512 signing with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-521 with SHA-512 verifying with wrong algorithm name": {
-    "status": "FAIL"
+    "status": "PASS"
   },
   "ECDSA P-521 with SHA-512 verification failure due to altered signature": {
     "status": "PASS"

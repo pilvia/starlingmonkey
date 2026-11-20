@@ -3586,12 +3586,20 @@ export const handler = serveTest(async (t) => {
           await crypto.subtle.encrypt({ name, iv: aesCbcIv }, key, aesCbcPlaintext);
         }, DOMException, undefined, "NotSupportedError");
       }
-      // Cipher algorithms which are not implemented yet
-      for (const name of ["AES-CTR", "AES-GCM", "AES-KW", "RSA-OAEP"]) {
+      // Cipher algorithms which are not implemented yet, or have no encrypt operation
+      for (const name of ["AES-KW", "RSA-OAEP"]) {
         await rejects(async () => {
           await crypto.subtle.encrypt({ name, iv: aesCbcIv }, key, aesCbcPlaintext);
         }, DOMException, undefined, "NotSupportedError");
       }
+      // AES-CTR and AES-GCM are implemented: their parameters are normalized first, and then
+      // the key's algorithm must be the one named.
+      await rejects(async () => {
+        await crypto.subtle.encrypt({ name: "AES-CTR", iv: aesCbcIv }, key, aesCbcPlaintext);
+      }, TypeError);
+      await rejects(async () => {
+        await crypto.subtle.encrypt({ name: "AES-GCM", iv: aesCbcIv }, key, aesCbcPlaintext);
+      }, DOMException, undefined, "InvalidAccessError");
       await rejects(async () => {
         await crypto.subtle.encrypt({ name: "NOPE", iv: aesCbcIv }, key, aesCbcPlaintext);
       }, DOMException, undefined, "NotSupportedError");
