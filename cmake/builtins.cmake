@@ -20,6 +20,9 @@ add_builtin(builtins/web/base64.cpp)
 add_builtin(builtins/web/blob.cpp)
 add_builtin(builtins/web/file.cpp)
 
+# `node:async_hooks`' AsyncLocalStorage, over the runtime's async context.
+add_builtin(builtins/node/async-hooks.cpp)
+
 add_builtin(
     builtins::web::event
     SRC

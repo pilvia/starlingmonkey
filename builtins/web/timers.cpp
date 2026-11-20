@@ -41,11 +41,15 @@ class TimerTask final : public api::AsyncTask {
 
   Heap<JSObject *> callback_;
   TimerArgumentsVector arguments_;
+  // The async context of the setTimeout/setInterval call, which every run of the callback
+  // gets back.
+  Heap<JSObject *> context_;
 
 public:
   explicit TimerTask(const int64_t delay_ns, const bool repeat, HandleObject callback,
                      JS::HandleValueVector args)
-      : timer_id_(TIMERS_MAP->next_timer_id++), delay_(delay_ns), deadline_(host_api::MonotonicClock::now() + delay_ns), repeat_(repeat), callback_(callback) {
+      : timer_id_(TIMERS_MAP->next_timer_id++), delay_(delay_ns), deadline_(host_api::MonotonicClock::now() + delay_ns), repeat_(repeat), callback_(callback),
+        context_(api::AsyncContext::current()) {
     
 
     arguments_.reserve(args.length());
@@ -72,6 +76,8 @@ public:
       argv.infallibleAppend(arg);
     }
 
+    RootedObject context(cx, context_);
+    api::AsyncContext::AutoEnter enter(cx, context);
     RootedValue rval(cx);
     if (!Call(cx, NullHandleValue, callback, argv, &rval)) {
       // HTML: an exception thrown by the callback is reported, and the event
@@ -119,6 +125,7 @@ public:
 
   void trace(JSTracer *trc) override {
     TraceEdge(trc, &callback_, "Timer callback");
+    TraceEdge(trc, &context_, "Timer async context");
     for (auto &arg : arguments_) {
       TraceEdge(trc, &arg, "Timer callback arguments");
     }

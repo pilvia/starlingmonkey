@@ -8,6 +8,7 @@
 
 #include "js/CompilationAndEvaluation.h"
 #include "js/Modules.h"
+#include "js/Prefs.h"
 #ifdef ENABLE_JS_NIGHTMONKEY
 #  include "runtime/Night.h"
 #  include "runtime/NightHooks.h"
@@ -331,6 +332,10 @@ bool create_initializer_global(Engine *engine) {
 
 bool init_js(const EngineConfig& config) {
   JS_Init();
+  // Promise jobs take SpiderMonkey's legacy path, which hands each job to the embedding's job
+  // queue as it is enqueued: AsyncContext's queue needs that to carry the async context (see
+  // runtime/async_context.cpp). Set before any promise exists, as the pref requires.
+  JS::Prefs::set_use_js_microtask_queue(false);
 
   JSContext *cx = JS_NewContext(JS::DefaultHeapMaxBytes);
   if (!cx) {
@@ -361,6 +366,10 @@ bool init_js(const EngineConfig& config) {
   }
 
   JSAutoRealm ar(cx, GLOBAL);
+
+  if (!api::AsyncContext::init(cx)) {
+    return false;
+  }
 
   JS::SetPromiseRejectionTrackerCallback(cx, rejection_tracker);
   unhandledRejectedPromises.init(cx, JS::NewSetObject(cx));
@@ -849,6 +858,7 @@ void Engine::clear_unhandled_promise_rejections() {
 }
 void Engine::reset() {
   clear_unhandled_promise_rejections();
+  api::AsyncContext::reset();
   core::EventLoop::reset(this);
   builtins::web::timers::reset();
   core::EventLoop::reset(this);
