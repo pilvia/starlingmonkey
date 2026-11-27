@@ -72,6 +72,7 @@ test_e2e(finalization-registry-snapshot)
 test_e2e(finalization-registry-tla-err)
 test_e2e(nightmonkey-fallback)
 test_e2e(upload-wait-until)
+test_e2e(request-copy-unread-body)
 test_e2e(request-copy-to-a-closed-port)
 
 integration_tests(

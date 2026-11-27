@@ -1098,17 +1098,25 @@ bool do_body_source_pull(JSContext *cx, HandleObject source, HandleObject body_o
   // ReadableStream#pipeTo locks the destination WritableStream until the
   // source ReadableStream is closed/canceled, so only one stream can ever be
   // piped in at the same time.
+  //
+  // Only a destination that is being sent has an outgoing body on the host to append to. A copy
+  // that is read in JS instead (`new Request(request).text()`) has no host handle, or only the
+  // incoming one it was made from, so its chunks are read the ordinary way below.
   RootedObject pipe_dest(cx, streams::NativeStreamSource::piped_to_transform_stream(source));
   if (pipe_dest && streams::TransformStream::readable_used_as_body(pipe_dest)) {
     MOZ_ASSERT(!streams::TransformStream::backpressure(pipe_dest));
     RootedObject dest_owner(cx, streams::TransformStream::owner(pipe_dest));
-    MOZ_ASSERT(!JS_IsExceptionPending(cx));
-    if (!RequestOrResponse::append_body(cx, dest_owner, body_owner, close_appended_body, body_owner)) {
-      return false;
-    }
+    if (RequestOrResponse::maybe_handle(dest_owner) &&
+        !RequestOrResponse::is_incoming(dest_owner)) {
+      MOZ_ASSERT(!JS_IsExceptionPending(cx));
+      if (!RequestOrResponse::append_body(cx, dest_owner, body_owner, close_appended_body,
+                                          body_owner)) {
+        return false;
+      }
 
-    MOZ_ASSERT(!JS_IsExceptionPending(cx));
-    return true;
+      MOZ_ASSERT(!JS_IsExceptionPending(cx));
+      return true;
+    }
   }
 
   ENGINE->queue_async_task(js_new<BodyFutureTask>(source));

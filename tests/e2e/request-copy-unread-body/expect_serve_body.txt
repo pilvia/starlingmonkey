@@ -1,0 +1,2 @@
+direct: 200 POST name=Ada
+getter: 200 POST name=Ada
