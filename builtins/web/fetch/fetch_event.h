@@ -80,6 +80,9 @@ public:
 
   static JS::HandleObject instance();
 
+  // The body of the response being streamed to the client: what a Response's body is written to
+  // while it is sent, whether the Response was made here or came from a fetch.
+  static host_api::HttpOutgoingBody *streaming_body();
   static void increase_interest();
   static void decrease_interest();
 

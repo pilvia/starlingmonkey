@@ -405,6 +405,8 @@ bool FetchEvent::waitUntil(JSContext *cx, unsigned argc, JS::Value *vp) {
   return true;
 }
 
+host_api::HttpOutgoingBody *FetchEvent::streaming_body() { return STREAMING_BODY; }
+
 void FetchEvent::increase_interest() { inc_pending_promise_count(INSTANCE); }
 
 void FetchEvent::decrease_interest() { dec_pending_promise_count(INSTANCE); }

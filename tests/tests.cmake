@@ -74,6 +74,7 @@ test_e2e(nightmonkey-fallback)
 test_e2e(upload-wait-until)
 test_e2e(request-copy-unread-body)
 test_e2e(request-copy-to-a-closed-port)
+test_e2e(respond-with-a-read-fetched-response)
 
 integration_tests(
     blob

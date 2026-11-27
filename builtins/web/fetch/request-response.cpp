@@ -1222,6 +1222,16 @@ bool stop_sending_body(JSContext *cx, HandleObject body_owner,
   return finish_outgoing_body_streaming(cx, body_owner);
 }
 
+// The outgoing body a streamed body is written to. A Response is only ever sent as the fetch
+// event's response, and one that came from a fetch keeps its incoming handle while it is sent,
+// so its outgoing body is the event's and not on the object.
+host_api::HttpOutgoingBody *sending_body(JSObject *body_owner) {
+  if (Response::is_instance(body_owner)) {
+    return fetch_event::FetchEvent::streaming_body();
+  }
+  return RequestOrResponse::outgoing_body_handle(body_owner);
+}
+
 bool write_all_finish_callback(JSContext *cx, HandleObject then_handler) {
   // The reader is stored in the catch handler, which we need here as well.
   // So we get that first, then the reader.
@@ -1231,7 +1241,7 @@ bool write_all_finish_callback(JSContext *cx, HandleObject then_handler) {
   // The write task completes when the chunk is written, and also when nothing more could be
   // written and the rest was dropped.
   JS::RootedObject body_owner(cx, &GetFunctionNativeReserved(then_handler, 0).toObject());
-  const auto *body = RequestOrResponse::outgoing_body_handle(body_owner);
+  const auto *body = sending_body(body_owner);
   if (body->stopped()) {
     return stop_sending_body(cx, body_owner, body);
   }
@@ -1248,7 +1258,7 @@ bool write_all_finish_callback(JSContext *cx, HandleObject then_handler) {
 bool reader_for_outgoing_body_then_handler(JSContext *cx, JS::HandleObject body_owner,
                                            JS::HandleValue extra, JS::CallArgs args) {
   JS::RootedObject then_handler(cx, &args.callee());
-  auto *body = RequestOrResponse::outgoing_body_handle(body_owner);
+  auto *body = sending_body(body_owner);
 
   // We're guaranteed to work with a native ReadableStreamDefaultReader here,
   // which in turn is guaranteed to vend {done: bool, value: any} objects to
