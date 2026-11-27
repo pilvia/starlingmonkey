@@ -71,6 +71,8 @@ test_e2e(finalization-registry)
 test_e2e(finalization-registry-snapshot)
 test_e2e(finalization-registry-tla-err)
 test_e2e(nightmonkey-fallback)
+test_e2e(upload-wait-until)
+test_e2e(request-copy-to-a-closed-port)
 
 integration_tests(
     blob
@@ -82,5 +84,6 @@ integration_tests(
     performance
     textdecoder
     timers
+    upload
     urlsearchparams
 )

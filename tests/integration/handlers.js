@@ -8,3 +8,4 @@ export { handler as event } from './event/event.js';
 export { handler as formdata } from './formdata/formdata.js';
 export { handler as urlsearchparams } from './urlsearchparams/urlsearchparams.js';
 export { handler as textdecoder } from './textdecoder/textdecoder.js';
+export { handler as upload, early413, bodyLength } from './upload/upload.js';

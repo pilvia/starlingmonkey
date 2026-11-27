@@ -85,6 +85,18 @@ public:
     JSContext *cx = engine->cx();
     RootedObject owner(cx, streams::NativeStreamSource::owner(body_source_));
     RootedObject stream(cx, streams::NativeStreamSource::stream(body_source_));
+
+    // The stream was cancelled while this read waited, as a body being forwarded is when the
+    // forward's peer stops reading. Nobody is left to deliver to, and closing or enqueuing would
+    // throw.
+    bool readable = false;
+    if (!JS::ReadableStreamIsReadable(cx, stream, &readable)) {
+      return false;
+    }
+    if (!readable) {
+      return cancel(engine);
+    }
+
     auto *body = RequestOrResponse::incoming_body_handle(owner);
 
     auto read_res = body->read(HANDLE_READ_CHUNK_SIZE);
@@ -1066,7 +1078,13 @@ bool RequestOrResponse::bodyAll(JSContext *cx, JS::CallArgs args, JS::HandleObje
  */
 bool close_appended_body(JSContext *cx, HandleObject body_owner) {
   RootedObject body(cx, RequestOrResponse::body_stream(body_owner));
-  return ReadableStreamClose(cx, body);
+  // The stream is no longer readable when it was cancelled meanwhile, because the destination's
+  // peer stopped reading.
+  bool readable = false;
+  if (!JS::ReadableStreamIsReadable(cx, body, &readable)) {
+    return false;
+  }
+  return !readable || ReadableStreamClose(cx, body);
 }
 
 bool do_body_source_pull(JSContext *cx, HandleObject source, HandleObject body_owner) {
@@ -1148,11 +1166,67 @@ bool RequestOrResponse::body_source_cancel_algorithm(JSContext *cx, JS::CallArgs
   return true;
 }
 
+// Nothing more of an outgoing body can be sent while JS streams it: the peer stopped reading,
+// or the host refused a write (more bytes than the declared `content-length`). Cancels the
+// body's stream with a TypeError, so that its source stops producing, and finishes the body.
+//
+// A closed peer is no error of the request's: finishing a request's body hands its response
+// future to the event loop, which settles the fetch with a network error, or with the response
+// the peer sent before it stopped reading.
+// A refused write means the peer got a body cut short. The fetch rejects with the host's reason
+// before the peer's answer to the cut body can settle it; for a response, the reason is
+// reported. Work the request still has (`waitUntil`) goes on either way.
+bool stop_sending_body(JSContext *cx, HandleObject body_owner,
+                       const host_api::HttpOutgoingBody *body) {
+  const bool is_request = Request::is_instance(body_owner);
+  const char *kind = is_request ? "request" : "response";
+  const auto &write_error = body->write_error();
+  if (write_error) {
+    api::throw_error(cx, FetchErrors::OutgoingBodyWriteFailed, kind, write_error->c_str());
+  } else {
+    api::throw_error(cx, FetchErrors::OutgoingBodyPeerClosed, kind);
+  }
+  RootedValue reason(cx);
+  if (!JS_GetPendingException(cx, &reason)) {
+    return false;
+  }
+  JS_ClearPendingException(cx);
+
+  // The cancel's promise settles with the source's cancel steps, which are the source's
+  // business: one that throws is not an unhandled rejection of the request's.
+  RootedObject stream(cx, RequestOrResponse::body_stream(body_owner));
+  RootedObject cancelled(cx, JS::ReadableStreamCancel(cx, stream, reason));
+  if (!cancelled || !JS::SetAnyPromiseIsHandled(cx, cancelled)) {
+    JS_ClearPendingException(cx);
+  }
+
+  if (write_error) {
+    if (is_request) {
+      RootedObject response_promise(cx, Request::response_promise(body_owner));
+      if (!JS::RejectPromise(cx, response_promise, reason)) {
+        return false;
+      }
+    } else {
+      ENGINE->report_exception(reason, "sending the response body");
+    }
+  }
+
+  return finish_outgoing_body_streaming(cx, body_owner);
+}
+
 bool write_all_finish_callback(JSContext *cx, HandleObject then_handler) {
   // The reader is stored in the catch handler, which we need here as well.
   // So we get that first, then the reader.
   JS::RootedObject catch_handler(cx, &GetFunctionNativeReserved(then_handler, 1).toObject());
   JS::RootedObject reader(cx, &GetFunctionNativeReserved(catch_handler, 1).toObject());
+
+  // The write task completes when the chunk is written, and also when nothing more could be
+  // written and the rest was dropped.
+  JS::RootedObject body_owner(cx, &GetFunctionNativeReserved(then_handler, 0).toObject());
+  const auto *body = RequestOrResponse::outgoing_body_handle(body_owner);
+  if (body->stopped()) {
+    return stop_sending_body(cx, body_owner, body);
+  }
 
   // Read the next chunk.
   JS::RootedObject promise(cx, ReadableStreamDefaultReaderRead(cx, reader));

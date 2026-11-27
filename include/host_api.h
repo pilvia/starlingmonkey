@@ -270,19 +270,43 @@ public:
 
 /// A convenience wrapper for the host calls involving outgoing http bodies.
 class HttpOutgoingBody final : public Pollable {
+  bool peer_closed_ = false;
+  std::optional<std::string> write_error_;
+
+  /// Records that nothing more can be written: the peer closed the stream when `error` is
+  /// empty, the host refused a write with that description otherwise.
+  void stop(std::optional<std::string> error);
+
 public:
   HttpOutgoingBody() = delete;
   explicit HttpOutgoingBody(std::unique_ptr<HandleState> handle);
 
   /// Get the body's stream's current capacity.
+  ///
+  /// An error means that nothing more can be written. If the host reported why, `stopped()` is
+  /// true from then on.
   Result<uint64_t> capacity();
+
+  /// True once nothing more can be written to the body: the peer stopped reading it
+  /// (`peer_closed()`), or the host refused a write (`write_error()`). What is left of the body
+  /// cannot be delivered, so a writer stops and finishes the body instead of failing.
+  bool stopped() const { return peer_closed_ || write_error_.has_value(); }
+
+  /// True once the host has reported the body's stream closed: the peer stopped reading it. A
+  /// request's peer stops on a refused connect, an egress denial or an early response; a
+  /// response's when the client goes away.
+  bool peer_closed() const { return peer_closed_; }
+
+  /// The host's description of a write it refused, such as a body longer than its declared
+  /// `content-length`. The peer did not get the body the writer meant to send.
+  const std::optional<std::string> &write_error() const { return write_error_; }
 
   /// Write a chunk to this handle.
   ///
-  /// Asserts that the receiver is ready to write the entire chunk, which the caller must ensure
-  /// by calling `receiver->capacity()` first and not attempting to write more than the returned
-  /// value.
-  void write(const uint8_t *bytes, size_t len);
+  /// The caller must ensure that the receiver is ready to write the entire chunk, by calling
+  /// `receiver->capacity()` first and not attempting to write more than the returned value.
+  /// An error means nothing more can be written, and sets `stopped()`.
+  Result<Void> write(const uint8_t *bytes, size_t len);
 
   /// Writes the given number of bytes from the given buffer to the given handle.
   ///

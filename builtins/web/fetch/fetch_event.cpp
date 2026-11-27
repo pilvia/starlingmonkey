@@ -373,7 +373,8 @@ bool FetchEvent::respondWith(JSContext *cx, unsigned argc, JS::Value *vp) {
 
   if (body_text) {
     auto *body = body_res.unwrap();
-    body->write(reinterpret_cast<const uint8_t*>(body_text->data()), body_text->length());
+    // A client that went away gets no error text; the response is finished all the same.
+    body->write(reinterpret_cast<const uint8_t *>(body_text->data()), body_text->length());
   }
 
   return send_response(response, self, FetchEvent::State::respondedWithError);

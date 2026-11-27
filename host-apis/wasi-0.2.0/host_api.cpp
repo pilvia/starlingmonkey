@@ -347,22 +347,42 @@ string_view HttpRequestResponseBase::url() {
   return string_view(*_url);
 }
 
-bool write_to_outgoing_body(Borrow<OutputStream> borrow, const uint8_t *ptr, const size_t len) {
+bool write_to_outgoing_body(Borrow<OutputStream> borrow, const uint8_t *ptr, const size_t len,
+                            wasi_io_streams_stream_error_t *err) {
   // The write call doesn't mutate the buffer; the cast is just for the
   // generated bindings.
   bindings_list_u8_t list{const_cast<uint8_t *>(ptr), len};
-  wasi_io_streams_stream_error_t err;
-  // TODO: proper error handling.
-  bool success = wasi_io_streams_method_output_stream_write(borrow, &list, &err);
-  if (!success) {
-    dump_io_error(err);
-    return false;
+  return wasi_io_streams_method_output_stream_write(borrow, &list, err);
+}
+
+// What an output stream's error says: nothing for `closed` (the peer stopped reading), the
+// host's description for a failed operation. Takes ownership of the error resource the latter
+// carries.
+std::optional<std::string> output_stream_error(wasi_io_streams_stream_error_t &err) {
+  if (err.tag != WASI_IO_STREAMS_STREAM_ERROR_LAST_OPERATION_FAILED) {
+    return std::nullopt;
   }
-  return true;
+  bindings_string_t text{};
+  wasi_io_error_method_error_to_debug_string({err.val.last_operation_failed.__handle}, &text);
+  std::string description(reinterpret_cast<const char *>(text.ptr), text.len);
+  bindings_string_free(&text);
+  wasi_io_error_error_drop_own(err.val.last_operation_failed);
+  if (description.empty()) {
+    description = "the host refused the write";
+  }
+  return description;
 }
 
 HttpOutgoingBody::HttpOutgoingBody(std::unique_ptr<HandleState> state) : Pollable() {
   handle_state_ = std::move(state);
+}
+
+void HttpOutgoingBody::stop(std::optional<std::string> error) {
+  if (!error) {
+    peer_closed_ = true;
+  } else if (!write_error_) {
+    write_error_ = std::move(error);
+  }
 }
 Result<uint64_t> HttpOutgoingBody::capacity() {
   if (!valid()) {
@@ -375,18 +395,28 @@ Result<uint64_t> HttpOutgoingBody::capacity() {
   uint64_t capacity = 0;
   wasi_io_streams_stream_error_t err;
   if (!wasi_io_streams_method_output_stream_check_write(borrow, &capacity, &err)) {
-    dump_io_error(err);
+    stop(output_stream_error(err));
     return Result<uint64_t>::err(154);
   }
   return Result<uint64_t>::ok(capacity);
 }
 
-void HttpOutgoingBody::write(const uint8_t *bytes, size_t len) {
-  MOZ_ASSERT(capacity().unwrap() >= len);
+Result<Void> HttpOutgoingBody::write(const uint8_t *bytes, size_t len) {
+#ifdef DEBUG
+  auto capacity_res = capacity();
+  MOZ_ASSERT_IF(!capacity_res.is_err(), capacity_res.unwrap() >= len);
+#endif
 
   auto *state = static_cast<OutgoingBodyHandle *>(this->handle_state_.get());
   Borrow<OutputStream> borrow(state->stream_handle_);
-  MOZ_RELEASE_ASSERT(write_to_outgoing_body(borrow, bytes, len));
+  wasi_io_streams_stream_error_t err;
+  if (!write_to_outgoing_body(borrow, bytes, len, &err)) {
+    // A write the host refuses (more bytes than the declared `content-length`) is not a closed
+    // peer: the peer got a body cut short, and the writer must say so.
+    stop(output_stream_error(err));
+    return Result<Void>::err(154);
+  }
+  return {};
 }
 
 class BodyWriteAllTask final : public api::AsyncTask {
@@ -397,6 +427,17 @@ class BodyWriteAllTask final : public api::AsyncTask {
   Heap<JSObject *> cb_receiver_;
   HostBytes bytes_;
   size_t offset_ = 0;
+
+  // Calls the completion callback: all bytes are written, or nothing more can be written and the
+  // rest is dropped. The callback tells the two apart by the body's `stopped()`.
+  bool complete(api::Engine *engine) {
+    bytes_.ptr.reset();
+    RootedObject receiver(engine->cx(), cb_receiver_);
+    bool result = cb_(engine->cx(), receiver);
+    cb_ = nullptr;
+    cb_receiver_ = nullptr;
+    return result;
+  }
 
 public:
   explicit BodyWriteAllTask(HttpOutgoingBody *outgoing_body, HostBytes bytes,
@@ -412,7 +453,8 @@ public:
     while (true) {
       auto res = outgoing_body_->capacity();
       if (res.is_err()) {
-        return false;
+        // A stopped body is not an error of the event loop: it settles whatever waits on it.
+        return outgoing_body_->stopped() && complete(engine);
       }
       uint64_t capacity = res.unwrap();
       if (capacity == 0) {
@@ -421,16 +463,13 @@ public:
       }
 
       auto bytes_to_write = std::min(bytes_.len - offset_, static_cast<size_t>(capacity));
-      outgoing_body_->write(bytes_.ptr.get() + offset_, bytes_to_write);
+      if (outgoing_body_->write(bytes_.ptr.get() + offset_, bytes_to_write).is_err()) {
+        return complete(engine);
+      }
       offset_ += bytes_to_write;
       MOZ_ASSERT(offset_ <= bytes_.len);
       if (offset_ == bytes_.len) {
-        bytes_.ptr.reset();
-        RootedObject receiver(engine->cx(), cb_receiver_);
-        bool result = cb_(engine->cx(), receiver);
-        cb_ = nullptr;
-        cb_receiver_ = nullptr;
-        return result;
+        return complete(engine);
       }
     }
   }
@@ -516,7 +555,12 @@ public:
     MOZ_ASSERT(state_ == State::BlockedOnOutgoing);
     auto res = outgoing_body_->capacity();
     if (res.is_err()) {
-      return false;
+      // Nothing more of the incoming body can be delivered.
+      if (!outgoing_body_->stopped()) {
+        return false;
+      }
+      set_state(engine->cx(), State::Done);
+      return true;
     }
     uint64_t capacity = res.unwrap();
     if (capacity > 0) {
@@ -542,8 +586,10 @@ public:
         return true;
       }
 
-      if (bytes.len > 0) {
-        outgoing_body_->write(bytes.ptr.get(), bytes.len);
+      // A failed write means nothing more can be delivered, as below.
+      if (bytes.len > 0 && outgoing_body_->write(bytes.ptr.get(), bytes.len).is_err()) {
+        set_state(engine->cx(), State::Done);
+        return true;
       }
 
       if (done) {
@@ -553,8 +599,12 @@ public:
 
       auto capacity_res = outgoing_body_->capacity();
       if (capacity_res.is_err()) {
-        // TODO: proper error handling.
-        return false;
+        if (!outgoing_body_->stopped()) {
+          // TODO: proper error handling.
+          return false;
+        }
+        set_state(engine->cx(), State::Done);
+        return true;
       }
       capacity = capacity_res.unwrap();
     } while (capacity > 0);
@@ -601,9 +651,9 @@ Result<Void> HttpOutgoingBody::close() {
     wasi_io_streams_stream_error_t err;
     bool success = wasi_io_streams_method_output_stream_blocking_flush(borrow, &err);
     if (!success) {
-      // TODO: validate that this condition applies if `content-length` bytes were written, and
-      //  the host has auto-closed the body.
-      MOZ_RELEASE_ASSERT(err.tag == WASI_IO_STREAMS_STREAM_ERROR_CLOSED);
+      // The peer stopped reading, or the host failed the flush: what was buffered is not
+      // delivered, and the body is finished anyway.
+      stop(output_stream_error(err));
     }
   }
 
