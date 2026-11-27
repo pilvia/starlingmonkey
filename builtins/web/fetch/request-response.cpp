@@ -493,6 +493,13 @@ bool RequestOrResponse::extract_body(JSContext *cx, JS::HandleObject self,
     }
 
     if (content_length.isSome()) {
+      // A request's Content-Length is its body's. It is a forbidden request header, which a
+      // fetch sets from the body whatever the caller's headers say (Fetch, "HTTP-network-or-
+      // cache fetch"). A caller's value can be stale, as when a proxy forwards the headers of a
+      // request whose body it rewrote, and the host would refuse the longer body or cut it short.
+      if (Request::is_instance(self) && !Headers::remove_valid(cx, headers, "Content-Length")) {
+        return false;
+      }
       auto length_str = std::to_string(content_length.value());
       if (!Headers::set_valid_if_undefined(cx, headers, "Content-Length", length_str)) {
         return false;

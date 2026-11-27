@@ -159,6 +159,19 @@ export const handler = (evt) => serveTest(async (t) => {
     assert(reason instanceof TypeError, `the body stream is cancelled with a TypeError, not ${reason}`);
   });
 
+  // A body whose length is known sets the request's Content-Length, whatever the caller's headers
+  // say: here they are stale, as when a proxy forwards the headers of a body it rewrote.
+  await t.test('known-length-body-with-a-stale-content-length', async () => {
+    for (const declared of ['3', '64']) {
+      const response = await fetch(bodyLength, {
+        method: 'POST',
+        headers: { 'content-length': declared },
+        body: 'name=Ada',
+      });
+      strictEqual(await response.text(), 'length 8', `with content-length: ${declared}`);
+    }
+  });
+
   await t.test('stream-as-long-as-its-content-length', async () => {
     const response = await fetch(bodyLength, {
       method: 'POST',
