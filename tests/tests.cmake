@@ -75,6 +75,7 @@ test_e2e(upload-wait-until)
 test_e2e(request-copy-unread-body)
 test_e2e(request-copy-to-a-closed-port)
 test_e2e(respond-with-a-read-fetched-response)
+test_e2e(response-stream-that-errors)
 
 integration_tests(
     blob

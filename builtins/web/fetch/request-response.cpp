@@ -551,11 +551,14 @@ bool finish_outgoing_body_streaming(JSContext *cx, HandleObject body_owner) {
     return true;
   }
 
+  // A body that was abandoned (abort_outgoing_body_streaming) is not finished.
   auto *body = RequestOrResponse::outgoing_body_handle(body_owner);
-  auto res = body->close();
-  if (const auto *err = res.to_err()) {
-    HANDLE_ERROR(cx, *err);
-    return false;
+  if (body->valid()) {
+    auto res = body->close();
+    if (const auto *err = res.to_err()) {
+      HANDLE_ERROR(cx, *err);
+      return false;
+    }
   }
 
   if (Request::is_instance(body_owner)) {
@@ -1232,6 +1235,36 @@ host_api::HttpOutgoingBody *sending_body(JSObject *body_owner) {
   return RequestOrResponse::outgoing_body_handle(body_owner);
 }
 
+// Ends an outgoing body that was cut short: abandons it, so that the peer sees it fail instead of
+// taking the part it got for the whole, and goes on as finishing a body does.
+bool abort_outgoing_body_streaming(JSContext *cx, HandleObject body_owner) {
+  auto *body = sending_body(body_owner);
+  if (body && body->valid()) {
+    auto res = body->abort();
+    if (const auto *err = res.to_err()) {
+      HANDLE_ERROR(cx, *err);
+      return false;
+    }
+  }
+  return finish_outgoing_body_streaming(cx, body_owner);
+}
+
+// The body cannot be sent whole: its stream errored, or yielded something other than bytes. The
+// body is abandoned rather than finished. A request's fetch rejects with `error`; for a response,
+// `error` is reported. Work the request still has (`waitUntil`) goes on either way: the fetch
+// event's interest is released where the response's state ends, and a request never took any.
+bool abandon_sending_body(JSContext *cx, HandleObject body_owner, HandleValue error) {
+  if (Request::is_instance(body_owner)) {
+    RootedObject response_promise(cx, Request::response_promise(body_owner));
+    if (!JS::RejectPromise(cx, response_promise, error)) {
+      return false;
+    }
+  } else {
+    ENGINE->report_exception(error, "sending the response body");
+  }
+  return abort_outgoing_body_streaming(cx, body_owner);
+}
+
 bool write_all_finish_callback(JSContext *cx, HandleObject then_handler) {
   // The reader is stored in the catch handler, which we need here as well.
   // So we get that first, then the reader.
@@ -1279,26 +1312,22 @@ bool reader_for_outgoing_body_then_handler(JSContext *cx, JS::HandleObject body_
   }
 
   // The read operation returned something that's not a Uint8Array, or an array whose buffer has
-  // been detached.
+  // been detached. Nothing more is read: the stream is cancelled with the TypeError, and the body
+  // abandoned with it.
   if (!val.isObject() || !JS_IsUint8Array(&val.toObject()) ||
     JS::ArrayBufferView::fromObject(&val.toObject()).isDetached()) {
-    // Close the body stream, since we're not going to send anything to it anymore.
-    body->close();
-
-    // reject the request promise
-    if (Request::is_instance(body_owner)) {
-      JS::RootedObject response_promise(cx, Request::response_promise(body_owner));
-
-      api::throw_error(cx, FetchErrors::InvalidStreamChunk);
-      return RejectPromiseWithPendingError(cx, response_promise);
+    api::throw_error(cx, FetchErrors::InvalidStreamChunk);
+    RootedValue error(cx);
+    if (!JS_GetPendingException(cx, &error)) {
+      return false;
     }
-
-    // TODO: should we also create a rejected promise if a response reads something that's not a
-    // Uint8Array?
-    std::print(stderr, "Error: read operation on body ReadableStream didn't respond with a "
-                    "Uint8Array. Received value: ");
-    ENGINE->dump_value(val, stderr);
-    return false;
+    JS_ClearPendingException(cx);
+    RootedObject stream(cx, RequestOrResponse::body_stream(body_owner));
+    RootedObject cancelled(cx, JS::ReadableStreamCancel(cx, stream, error));
+    if (!cancelled || !JS::SetAnyPromiseIsHandled(cx, cancelled)) {
+      JS_ClearPendingException(cx);
+    }
+    return abandon_sending_body(cx, body_owner, error);
   }
 
   RootedObject array(cx, &val.toObject());
@@ -1349,18 +1378,25 @@ bool reader_for_outgoing_body_then_handler(JSContext *cx, JS::HandleObject body_
   return true;
 }
 
+// The body's stream errored while the body was being sent, so the peer got part of a body. A
+// request's fetch rejects with a TypeError whose cause is the stream's error, as a fetch whose
+// transmission failed does; a response reports the stream's error itself.
 bool reader_for_outgoing_body_catch_handler(JSContext *cx, JS::HandleObject body_owner,
                                             JS::HandleValue extra, JS::CallArgs args) {
-  fetch_event::FetchEvent::decrease_interest();
-
-  // TODO: check if this should create a rejected promise instead, so an
-  // in-content handler for unhandled rejections could deal with it. The body
-  // stream errored during the streaming send. Not much we can do, but at least
-  // close the stream, and warn.
-  std::print(stderr, "Warning: body ReadableStream closed during body streaming. Exception: ");
-  ENGINE->dump_value(args.get(0), stderr);
-
-  return finish_outgoing_body_streaming(cx, body_owner);
+  RootedValue error(cx, args.get(0));
+  if (Request::is_instance(body_owner)) {
+    api::throw_error(cx, FetchErrors::OutgoingBodyStreamErrored, "request");
+    if (!JS_GetPendingException(cx, &error)) {
+      return false;
+    }
+    JS_ClearPendingException(cx);
+    RootedObject error_obj(cx, &error.toObject());
+    // Like the `cause` an Error constructor installs: writable, configurable, not enumerable.
+    if (!JS_DefineProperty(cx, error_obj, "cause", args.get(0), 0)) {
+      return false;
+    }
+  }
+  return abandon_sending_body(cx, body_owner, error);
 }
 
 bool RequestOrResponse::maybe_stream_body(JSContext *cx, JS::HandleObject body_owner,

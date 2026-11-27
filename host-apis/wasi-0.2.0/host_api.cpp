@@ -670,6 +670,18 @@ Result<Void> HttpOutgoingBody::close() {
 
   return {};
 }
+Result<Void> HttpOutgoingBody::abort() {
+  auto state = static_cast<OutgoingBodyHandle *>(handle_state_.get());
+  if (state->pollable_handle_ != INVALID_POLLABLE_HANDLE) {
+    wasi_io_poll_pollable_drop_own(own_pollable_t{state->pollable_handle_});
+    state->pollable_handle_ = INVALID_POLLABLE_HANDLE;
+  }
+  wasi_io_streams_output_stream_drop_own({state->stream_handle_});
+  // Dropped without `finish`: wasi:http's outgoing-body treats that as a corrupt body.
+  wasi_http_types_outgoing_body_drop_own({state->take()});
+  return {};
+}
+
 Result<PollableHandle> HttpOutgoingBody::subscribe() {
   auto state = static_cast<OutgoingBodyHandle *>(handle_state_.get());
   if (state->pollable_handle_ == INVALID_POLLABLE_HANDLE) {

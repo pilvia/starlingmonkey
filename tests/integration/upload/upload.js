@@ -44,6 +44,32 @@ function tenByteChunks(count, onCancel) {
   }, { highWaterMark: 0 });
 }
 
+// A body that sends two chunks of 1000 bytes, and then errors with `error`.
+function erroringStream(error) {
+  let sent = 0;
+  return new ReadableStream({
+    pull(controller) {
+      if (sent++ < 2) {
+        controller.enqueue(new Uint8Array(1000));
+      } else {
+        controller.error(error);
+      }
+    },
+  }, { highWaterMark: 0 });
+}
+
+// A body that yields strings, which a body stream may not.
+function stringStream(onCancel) {
+  return new ReadableStream({
+    pull(controller) {
+      controller.enqueue('name=Ada');
+    },
+    cancel(reason) {
+      onCancel?.(reason);
+    },
+  }, { highWaterMark: 0 });
+}
+
 // What an upload to an upstream that answers 413 at once settles to. Either is right: hyper's
 // client reports an answer that arrives while the body is still being sent as an error, even
 // when the server reads the rest.
@@ -104,6 +130,30 @@ export const handler = (evt) => serveTest(async (t) => {
       method: 'POST',
       headers: { 'content-length': '15' },
       body: tenByteChunks(4, (r) => { reason = r; }),
+      duplex: 'half',
+    }), TypeError);
+    assert(reason instanceof TypeError, `the body stream is cancelled with a TypeError, not ${reason}`);
+  });
+
+  // A body whose stream errors while it is sent: the fetch rejects with a TypeError whose cause
+  // is the stream's error, and the request goes on.
+  await t.test('stream-that-errors-while-sent', async () => {
+    const boom = new Error('boom');
+    let error;
+    try {
+      await fetch(bodyLength, { method: 'POST', body: erroringStream(boom), duplex: 'half' });
+    } catch (e) {
+      error = e;
+    }
+    assert(error instanceof TypeError, `the fetch rejects with a TypeError, not ${error}`);
+    strictEqual(error.cause, boom, "the TypeError's cause is the stream's error");
+  });
+
+  await t.test('stream-of-strings', async () => {
+    let reason;
+    await rejects(() => fetch(bodyLength, {
+      method: 'POST',
+      body: stringStream((r) => { reason = r; }),
       duplex: 'half',
     }), TypeError);
     assert(reason instanceof TypeError, `the body stream is cancelled with a TypeError, not ${reason}`);

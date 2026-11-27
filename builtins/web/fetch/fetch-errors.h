@@ -15,6 +15,7 @@ DEF_ERR(BodyStreamUnusable, JSEXN_TYPEERR, "Can't use a ReadableStream that's lo
 DEF_ERR(IncomingBodyStreamError, JSEXN_TYPEERR, "IO error reading from incoming {0} body", 1)
 DEF_ERR(OutgoingBodyPeerClosed, JSEXN_TYPEERR, "The peer stopped reading the {0} body", 1)
 DEF_ERR(OutgoingBodyWriteFailed, JSEXN_TYPEERR, "Sending the {0} body failed: {1}", 2)
+DEF_ERR(OutgoingBodyStreamErrored, JSEXN_TYPEERR, "The {0} body's stream errored while it was sent", 1)
 DEF_ERR(BodyStreamTeeingFailed, JSEXN_ERR, "Cloning body stream failed", 0)
 DEF_ERR(InvalidStatus, JSEXN_RANGEERR, "{0}: invalid status {1}", 2)
 DEF_ERR(InvalidStreamChunk, JSEXN_TYPEERR, "ReadableStream used as a Request or Response body must produce Uint8Array values", 0)

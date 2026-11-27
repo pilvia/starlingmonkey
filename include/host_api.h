@@ -323,6 +323,11 @@ public:
   /// Close this handle, and reset internal state to invalid.
   Result<Void> close();
 
+  /// Abandon the body without finishing it, and reset internal state to invalid. The host treats
+  /// an unfinished body as corrupt, so the peer sees it fail instead of end: for a body that was
+  /// cut short.
+  Result<Void> abort();
+
   Result<PollableHandle> subscribe() override;
   void unsubscribe() override;
 };
